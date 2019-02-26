@@ -61,8 +61,8 @@ void PrintHelp() {
 		{"leth", "L"},
 		{"tally", "F"},
 		{"title", "T"},
-		{"fName", "N"},
-		{"iName", "W"},
+		{"fileName", "o"},
+		{"imgName", "W"},
 		
 		{"xAxis", "x"},
 		{"xTitle", "X"},
@@ -119,8 +119,8 @@ std::string ProcessArgs(int argc, char** argv) {
 		{"tally",		required_argument,	nullptr,	'F'},
 		{"title",		required_argument,	nullptr,	'T'},
 
-		{"fName",		required_argument,	nullptr,	'N'},
-		{"iName",		required_argument,	nullptr,	'W'},
+		{"fileName",		required_argument,	nullptr,	'o'},
+		{"imgName",		required_argument,	nullptr,	'W'},
 		
 		{"xAxis",		required_argument,	nullptr,	'x'},
 		{"xTitle",		required_argument,	nullptr,	'X'},

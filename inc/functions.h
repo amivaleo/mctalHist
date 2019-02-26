@@ -168,11 +168,11 @@ void save(TCanvas * c, TObject * obj) {
 	size_t counter = 0;
 	std::string output;
 	
-	output = fileName + "_.eps";
+	output = fileName + ".eps";
 	c->SaveAs(output.c_str());
-	output = fileName + "_.svg";
+	output = fileName + ".svg";
 	c->SaveAs(output.c_str());
-	output = fileName + "_.root";
+	output = fileName + ".root";
 	obj->SaveAs(output.c_str());
 }
 

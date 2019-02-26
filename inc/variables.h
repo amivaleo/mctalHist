@@ -37,7 +37,7 @@ double contours[] = {};
 
 std::string legendItem[] = {};
 
-std::string fileName = "output";
+std::string fileName = "";
 std::string imgName = "";
 
 std::string tTitle = "";
@@ -51,6 +51,6 @@ int canvasHeight = 800;
 std::string tally = "";
 
 TImage * img;
-std::ofstream fileOutput (fileName);
+std::ofstream fileOutput (".output.dat");
 
 #endif

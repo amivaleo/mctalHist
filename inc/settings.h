@@ -26,7 +26,7 @@ pMin(1);	pMax(1);	// palette color range
 contours[] = {};
 legendItem[] = {};
 
-fileName = "output";
+fileName = "";
 imgName = "";
 
 tTitle = "";

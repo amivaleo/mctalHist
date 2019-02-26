@@ -52,7 +52,7 @@ int main (int argc, char** argv) {
 	if (s->GetNdimensions() == 11) std::cout << yellow << "WARNING :: the selected tally is a tmesh" << reset << std::endl;
 	
 	// print all THnSparse axes
-	if ((zAxis == 0) || (yAxis == 0)) s->Print("all");
+	if ((xAxis == -1) || (zAxis == -1)) s->Print("all");
 	
 	gStyle->SetOptStat(0);
 
@@ -112,14 +112,14 @@ int main (int argc, char** argv) {
 		// select abscissae and ordinates axes
 		if (xAxis == -1) {
 			do {
-				std::cout << green << "Select the abscissae axis: " << reset;
+				std::cout << green << "Select the abscissae axis [f, d, u, s, m, c, e, t, i, j, k]: " << reset;
 				std::cin >> tmp;
 				xAxis = getAxisIndex(tmp);
 			} while ((!xAxis) || (!std::cin) || (xAxis > 10));
 		}
 		if (yAxis == -1) {
 			do {
-				std::cout << green << "Select the ordinates axis: " << reset;
+				std::cout << green << "Select the ordinates axis [f, d, u, s, m, c, e, t, i, j, k]: " << reset;
 				std::cin >> tmp;
 				yAxis = getAxisIndex(tmp);
 			} while ((!yAxis) || (!std::cin) || (yAxis > 10));
@@ -130,7 +130,6 @@ int main (int argc, char** argv) {
 			gPad->SetLogx();
 			if (verb) std::cout << yellow << "WARNING :: setting log-scale for x axis" << reset << std::endl;
 		}
-		
 		if (yLog) {
 			gPad->SetLogy();
 			if (verb) std::cout << yellow << "WARNING :: setting log-scale for y axis" << reset << std::endl;
@@ -143,7 +142,7 @@ int main (int argc, char** argv) {
 			TPad *p1 = new TPad("p1","p1",0.1, 0.1, .9, .9);
 			p1->Draw();
 			p1->cd();
-			img->Draw("xxx");
+			img->Draw();
 			c->cd();
 			TPad *p2 = new TPad("p2","p2",0., 0., 1., 1.);
 			if (zLog) {p2->SetLogz();}
@@ -196,7 +195,6 @@ int main (int argc, char** argv) {
 		
 		int entries = h->GetEntries();
 		
-		tTitle = tTitle == "" ? s->GetTitle() : tTitle;
 		h->SetTitle(tTitle.c_str());
 		
 		tmp = fileName + ".dat";
@@ -216,14 +214,13 @@ int main (int argc, char** argv) {
 				}
 			}
 		}
-
+		
 		// change palette range
 		if (pMin != pMax) {
 			h->GetZaxis()->SetRangeUser(pMin, pMax);
 			if (verb) std::cout << blue << std::scientific << "User defined range for the palette: [" << pMin << ", " << pMax << "]" << reset << std::endl;
 		}
-
-
+		
 		// write the output file if requested // this must be ameliorated
 		if (file) {
 			fileOutput << "# " << tTitle.c_str() << std::endl;
@@ -241,17 +238,16 @@ int main (int argc, char** argv) {
 		if (file) fileOutput << "#---" << tab << "Value-------" << tab << "Stat_err----" << std::endl;
 		
 		
-		
 		h->Draw("colz");
 		
 		// draw contours if any
-//		if (sizeof(contours)/sizeof(double) != 0) {
-//			h->SetContour(sizeof(contours)/sizeof(double),contours);
-//			h->SetLineColor(kRed);
-//			h->SetLineWidth(2);
-//			h->SetMarkerSize(8);
-//			h->Draw("cont3 same");
-//		}
+		if (sizeof(contours)/sizeof(double) != 0) {
+			h->SetContour(sizeof(contours)/sizeof(double),contours);
+			h->SetLineColor(kRed);
+			h->SetLineWidth(2);
+			h->SetMarkerSize(8);
+			h->Draw("cont3 same");
+		}
 
 		save(c, h);
 		

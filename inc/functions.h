@@ -12,13 +12,13 @@ size_t getAxisIndex(const std::string element) {
 	else return -1;
 }
 
-TCanvas * generateCanvas(int cW = canvasWidth, int cH = canvasHeight) {
+TCanvas * generateCanvas() {
 	if (fileExist(imgName.c_str())) {
 		img = TImage::Open(imgName.c_str());
-		cW = img->GetWidth();
-		cH = img->GetHeight();
+		cWidth = img->GetWidth();
+		cHeight = img->GetHeight();
 	}
-	TCanvas * c = new TCanvas(fileName.c_str(), fileName.c_str(), cW, cH);
+	TCanvas * c = new TCanvas(fileName.c_str(), fileName.c_str(), cWidth, cHeight);
 	//            L    R    D    U
 	c->SetMargin(0.1, 0.01, 0.1, 0.1);
 	if (tbar) c->ToggleEventStatus();

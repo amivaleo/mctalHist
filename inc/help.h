@@ -13,6 +13,9 @@
 		"Show grid",
 		"Multiply the y axis values by a constant factor in order to give results in lethargy units",
 		
+		"Set canvas width",
+		"Set canvas height",
+		
 		"Select the tally to plot",
 		"Set the graph title",
 		
@@ -59,10 +62,14 @@ void PrintHelp() {
 		{"tick", "G"},
 		{"grid", "g"},
 		{"leth", "L"},
+		
+		{"cWeight", "W"},
+		{"cHeight", "H"},
+		
 		{"tally", "F"},
-		{"title", "T"},
+		{"tTitle", "T"},
 		{"fileName", "o"},
-		{"imgName", "W"},
+		{"imgName", "q"},
 		
 		{"xAxis", "x"},
 		{"xTitle", "X"},
@@ -102,7 +109,7 @@ std::string ProcessArgs(int argc, char** argv) {
 
 	std::string input;
 	
-	const char* const short_opts = "hvftedGgLF:T:N:W:x:X:liI:a:A:y:Y:mjJ:b:B:z:Z:nkK:c:C:p:P:";
+	const char* const short_opts = "hvftedGgLW:H:F:T:o:v:x:X:liI:a:A:y:Y:mjJ:b:B:z:Z:nkK:c:C:p:P:";
 	const option long_opts[] = {
 
 		{"help",		no_argument,		nullptr,	'h'},
@@ -115,12 +122,15 @@ std::string ProcessArgs(int argc, char** argv) {
 		{"tick",		no_argument,		nullptr,	'G'},
 		{"grid",		no_argument,		nullptr,	'g'},
 		{"leth",		no_argument,		nullptr,	'L'},
+		
+		{"cWeight",		required_argument,	nullptr,	'W'},
+		{"cHeight",		required_argument,	nullptr,	'H'},
 
 		{"tally",		required_argument,	nullptr,	'F'},
-		{"title",		required_argument,	nullptr,	'T'},
+		{"tTitle",		required_argument,	nullptr,	'T'},
 
-		{"fileName",		required_argument,	nullptr,	'o'},
-		{"imgName",		required_argument,	nullptr,	'W'},
+		{"fileName",	required_argument,	nullptr,	'o'},
+		{"imgName",		required_argument,	nullptr,	'q'},
 		
 		{"xAxis",		required_argument,	nullptr,	'x'},
 		{"xTitle",		required_argument,	nullptr,	'X'},
@@ -190,6 +200,13 @@ std::string ProcessArgs(int argc, char** argv) {
 			yMul *= leth;
 			break;
 
+		case 'W':
+			cWidth = std::stoi(optarg);
+			break;
+		case 'H':
+			cHeight = std::stoi(optarg);
+			break;
+
 		case 'F':
 			tally = std::string(optarg);
 			break;
@@ -197,10 +214,10 @@ std::string ProcessArgs(int argc, char** argv) {
 			tTitle = std::string(optarg);
 			break;
 			
-		case 'N':
+		case 'o':
 			fileName = std::string(optarg);
 			break;
-		case 'W':
+		case 'q':
 			imgName = std::string(optarg);
 			break;
 			

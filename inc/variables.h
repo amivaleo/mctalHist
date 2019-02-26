@@ -45,8 +45,8 @@ std::string xTitle = "x";
 std::string yTitle = "y";
 std::string zTitle = "z";
 
-int canvasWidth = 1200;
-int canvasHeight = 800;
+int cWidth = 1200;
+int cHeight = 800;
 
 std::string tally = "";
 

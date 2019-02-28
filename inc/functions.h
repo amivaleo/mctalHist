@@ -12,6 +12,14 @@ size_t getAxisIndex(const std::string element) {
 	else return -1;
 }
 
+template <typename T>
+std::string to_string (const T val) {
+	std::ostringstream out;
+	out.precision(0);
+	out << std::fixed << val;
+	return out.str();
+}
+
 TCanvas * generateCanvas() {
 	if (fileExist(imgName.c_str())) {
 		img = TImage::Open(imgName.c_str());
@@ -170,7 +178,7 @@ void save(TCanvas * c, TObject * obj) {
 	
 	output = fileName + ".eps";
 	c->SaveAs(output.c_str());
-	output = fileName + ".svg";
+	output = fileName + ".gif";
 	c->SaveAs(output.c_str());
 	output = fileName + ".root";
 	obj->SaveAs(output.c_str());

@@ -60,4 +60,6 @@ zTitle =
 	"";
 //	"[#mu Sv / h]";
 
+gStyle->SetOptStat(0);
+
 #endif

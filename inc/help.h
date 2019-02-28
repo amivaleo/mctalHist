@@ -78,7 +78,7 @@ void PrintHelp() {
 		{"xMul", "I"},
 		{"xMin", "a"},
 		{"xMax", "A"},
-		{"yAxis", "y"},		
+		{"yAxis", "y"},
 		{"yTitle", "Y"},
 		{"yLab", "m"},
 		{"yLog", "j"},
@@ -96,7 +96,6 @@ void PrintHelp() {
 		{"pMax", "P"}
 		};
 		
-	std::cout << blue << "Usage :: mctalHist [OPTIONS]... [FILE]" << reset << std::endl;
 	for (size_t i = 0; i < options.size(); ++i) {
 		std::cout << blue << " --" << std::setw(10) << std::left << options[i][0] << reset;
 		std::cout << blue << " -" << std::setw(6) << std::left << options[i][1] << reset;
@@ -122,7 +121,7 @@ std::string ProcessArgs(int argc, char** argv) {
 		{"tick",		no_argument,		nullptr,	'G'},
 		{"grid",		no_argument,		nullptr,	'g'},
 		{"leth",		no_argument,		nullptr,	'L'},
-		
+
 		{"cWeight",		required_argument,	nullptr,	'W'},
 		{"cHeight",		required_argument,	nullptr,	'H'},
 

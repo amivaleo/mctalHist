@@ -6,13 +6,13 @@ g++ mctalHist.c `root-config --cflags --ldflags --libs` -o mctalHist
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <getopt.h>
 
 #include "inc/libraries.h"
 #include "inc/addons.h"
 #include "inc/variables.h"
-/*#include "inc/settings.h"*/
 #include "inc/functions.h"
 #include "inc/help.h"
 
@@ -22,7 +22,7 @@ int main (int argc, char** argv) {
 	
 	if (argc < 2) {
 		std::cerr << red << "ERROR :: arguments missing!" << reset << std::endl;
-		std::cerr << red << "Usage: mctalHist [-option VALUE] " << argv[argc - 1] << " file.root" << reset << std::endl;
+		std::cerr << blue << "Usage: mctalHist [-option VALUE] file.root" << reset << std::endl;
 		std::cout << blue << "The content in square brackets [ ] is optional" << reset << std::endl;
 		PrintHelp();
 		return 1;
@@ -34,7 +34,7 @@ int main (int argc, char** argv) {
 		return 1;
 	}
 	
-	// read the root input file
+	// read input file mctal.root
 	TFile *file = new TFile(input.c_str());
 	THnSparseF *s;
 	
@@ -51,11 +51,9 @@ int main (int argc, char** argv) {
 	
 	if (s->GetNdimensions() == 11) std::cout << yellow << "WARNING :: the selected tally is a tmesh" << reset << std::endl;
 	
-	// print all THnSparse axes
+	// print all THnSparse axes if they were not declared in the input bash script
 	if ((xAxis == -1) || (zAxis == -1)) s->Print("all");
 	
-	gStyle->SetOptStat(0);
-
 	TCanvas *c;
 	
 	// MESH --------------------------------------------------------------------
@@ -250,8 +248,10 @@ int main (int argc, char** argv) {
 		}
 
 		save(c, h);
-		
+	
+	// =========================================================================
 	} else {	// TALLY -------------------------------------------------------
+	// =========================================================================
 		
 		double bin;
 		fileName = fileName == "" ? tally : fileName;
@@ -267,15 +267,15 @@ int main (int argc, char** argv) {
 		// set ranges for all the other axes if they have more than 1 bin
 		for (size_t i = 0; i < s->GetNdimensions(); i++) {
 			if ((i != xAxis) && (s->GetAxis(i)->GetNbins() > 1)) {
-				fileName += "_" + axes[i];
+				fileName += "-" + axes[i];
 				std::cout << blue << "Axis " << axes[i] << " has " << s->GetAxis(i)->GetNbins() << " bins" << reset << std::endl;
 				std::cout << green << tab << "Select the bin for the " << axes[i] << " axis [a :: all bins] [1-" << s->GetAxis(i)->GetNbins() << "]: " << reset;
 				std::cin >> tmp;
 				
 				if (tmp != "a") {
 					bin = std::stoi(tmp);
-					fileName += std::to_string(bin);
-					s->GetAxis(i)->SetRangeUser(s->GetAxis(i)->GetBinLowEdge(bin), s->GetAxis(i)->GetBinUpEdge(bin));
+					fileName += to_string(bin);
+					s->GetAxis(i)->SetRange(bin, bin);
 				} else std::cout << yellow << "WARNING :: all bins will be plotted" << reset << std::endl;
 			}
 		}

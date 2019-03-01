@@ -1,104 +1,113 @@
 #ifndef help_h
 #define help_h
 
-	const std::string optionDescription[] = {
-		"Show help",
-		
-		"Verbose output",
-		"Produce an output data file",
-		"Show toolbar",
-		"Show editor",
-		"Dark variant",
-		"Show ticks",
-		"Show grid",
-		"Multiply the y axis values by a constant factor in order to give results in lethargy units",
-		
-		"Set canvas width",
-		"Set canvas height",
-		
-		"Select the tally to plot",
-		"Set the graph title",
-		
-		"Set output files name",
-		"Specify the name for the background image",
-		
-		"Set x axis",
-		"Set x axis title",
-		"Hide x values",
-		"Set log scale on x axis",
-		"Multiply the x axis values by a constant factor",
-		"Set x axis user range [minimum value]",
-		"Set x axis user range [maximum value]",
-		
-		"Set y axis",
-		"Set y axis title",
-		"Hide y values",
-		"Set log scale on y axis",
-		"Multiply the y axis values by a constant factor",
-		"Set y axis user range [minimum value]",
-		"Set y axis user range [maximum value]",
-		
-		"Set z axis",
-		"Set z axis title",
-		"Hide z values",
-		"Set log scale on z axis",
-		"Multiply the z axis values by a constant factor",
-		"Set z axis user range [minimum value]",
-		"Set z axis user range [maximum value]",
-		
-		"Set coloured palette minimum value",
-		"Set coloured palette maximum value"
-		};
+const char* const short_opts = "hvtedGgLW:H:F:T:O:q:o:x:X:liI:a:A:y:Y:mjJ:b:B:z:Z:nkK:c:C:p:P:";
+const option long_opts[] = {
+	{"help",		no_argument,		nullptr,	'h'},
+
+	{"verb",		no_argument,		nullptr,	'v'},
+	{"tbar",		no_argument,		nullptr,	't'},
+	{"edit",		no_argument,		nullptr,	'e'},
+	{"dark",		no_argument,		nullptr,	'd'},
+	{"tick",		no_argument,		nullptr,	'G'},
+	{"grid",		no_argument,		nullptr,	'g'},
+	{"leth",		no_argument,		nullptr,	'L'},
+
+	{"cWeight",		required_argument,	nullptr,	'W'},
+	{"cHeight",		required_argument,	nullptr,	'H'},
+
+	{"tally",		required_argument,	nullptr,	'F'},
+	{"tTitle",		required_argument,	nullptr,	'T'},
+
+	{"fileName",	required_argument,	nullptr,	'O'},
+	{"imgName",		required_argument,	nullptr,	'q'},
+	{"imgFormat",	required_argument,	nullptr,	'o'},
+	
+	{"xAxis",		required_argument,	nullptr,	'x'},
+	{"xTitle",		required_argument,	nullptr,	'X'},
+	{"xLab",		no_argument,		nullptr,	'l'},
+	{"xLog",		no_argument,		nullptr,	'i'},
+	{"xMul",		required_argument,	nullptr,	'I'},
+	{"xMin",		required_argument,	nullptr,	'a'},
+	{"xMax",		required_argument,	nullptr,	'A'},
+	
+	{"yAxis",		required_argument,	nullptr,	'y'},		
+	{"yTitle",		required_argument,	nullptr,	'Y'},
+	{"yLab",		no_argument,		nullptr,	'm'},
+	{"yLog",		no_argument,		nullptr,	'j'},
+	{"yMul",		required_argument,	nullptr,	'J'},
+	{"yMin",		required_argument,	nullptr,	'b'},
+	{"yMax",		required_argument,	nullptr,	'B'},
+
+	{"zAxis",		required_argument,	nullptr,	'z'},		
+	{"zTitle",		required_argument,	nullptr,	'Z'},
+	{"zLab",		no_argument,		nullptr,	'n'},
+	{"zLog",		no_argument,		nullptr,	'k'},
+	{"zMul",		required_argument,	nullptr,	'K'},
+	{"zMin",		required_argument,	nullptr,	'c'},
+	{"zMax",		required_argument,	nullptr,	'C'},		
+
+	{"pMin",		required_argument,	nullptr,	'p'},
+	{"pMax",		required_argument,	nullptr,	'P'},
+
+	{nullptr,		no_argument,		nullptr,	0}
+	};
+
+const std::string optionDescription[] = {
+	"Show help",
+	
+	"Verbose output",
+	"Show toolbar",
+	"Show editor",
+	"Dark variant",
+	"Show ticks",
+	"Show grid",
+	"Multiply the y axis values by a constant factor in order to give results in lethargy units",
+	
+	"Set canvas width",
+	"Set canvas height",
+	
+	"Select the tally to plot",
+	"Set the graph title",
+	
+	"Set output files name",
+	"Specify the name for the background image",
+	
+	"Select the output file formats [dat, eps, gif, jpg, pdf, png, ps, root, svg]",
+	
+	"Set x axis",
+	"Set x axis title",
+	"Hide x values",
+	"Set log scale on x axis",
+	"Multiply the x axis values by a constant factor",
+	"Set x axis user range [minimum value]",
+	"Set x axis user range [maximum value]",
+	
+	"Set y axis",
+	"Set y axis title",
+	"Hide y values",
+	"Set log scale on y axis",
+	"Multiply the y axis values by a constant factor",
+	"Set y axis user range [minimum value]",
+	"Set y axis user range [maximum value]",
+	
+	"Set z axis",
+	"Set z axis title",
+	"Hide z values",
+	"Set log scale on z axis",
+	"Multiply the z axis values by a constant factor",
+	"Set z axis user range [minimum value]",
+	"Set z axis user range [maximum value]",
+	
+	"Set coloured palette minimum value",
+	"Set coloured palette maximum value"
+	};
 
 
 void PrintHelp() {
-	std::vector<std::vector<std::string>> options {
-		{"help", "h"},
-		{"verb", "v"},
-		{"file", "f"},
-		{"tbar", "t"},
-		{"edit", "e"},
-		{"dark", "d"},
-		{"tick", "G"},
-		{"grid", "g"},
-		{"leth", "L"},
-		
-		{"cWeight", "W"},
-		{"cHeight", "H"},
-		
-		{"tally", "F"},
-		{"tTitle", "T"},
-		{"fileName", "o"},
-		{"imgName", "q"},
-		
-		{"xAxis", "x"},
-		{"xTitle", "X"},
-		{"xLab", "l"},
-		{"xLog", "i"},
-		{"xMul", "I"},
-		{"xMin", "a"},
-		{"xMax", "A"},
-		{"yAxis", "y"},
-		{"yTitle", "Y"},
-		{"yLab", "m"},
-		{"yLog", "j"},
-		{"yMul", "J"},
-		{"yMin", "b"},
-		{"yMax", "B"},
-		{"zAxis", "z"},		
-		{"zTitle", "Z"},
-		{"zLab", "n"},
-		{"zLog", "k"},
-		{"zMul", "K"},
-		{"zMin", "c"},
-		{"zMax", "C"},		
-		{"pMin", "p"},
-		{"pMax", "P"}
-		};
-		
-	for (size_t i = 0; i < options.size(); ++i) {
-		std::cout << blue << " --" << std::setw(10) << std::left << options[i][0] << reset;
-		std::cout << blue << " -" << std::setw(6) << std::left << options[i][1] << reset;
+	for (size_t i = 0; i < sizeof(long_opts)/sizeof(long_opts[0]); ++i) {
+		std::cout << blue << " --" << std::setw(10) << std::left << long_opts[i].name << reset;
+		std::cout << blue << " -" << std::setw(6) << std::left << (char) long_opts[i].val << reset;
 		std::cout << blue << ":: " << optionDescription[i] << reset << std::endl;
 	}
 	exit(1);
@@ -108,59 +117,6 @@ std::string ProcessArgs(int argc, char** argv) {
 
 	std::string input;
 	
-	const char* const short_opts = "hvftedGgLW:H:F:T:o:v:x:X:liI:a:A:y:Y:mjJ:b:B:z:Z:nkK:c:C:p:P:";
-	const option long_opts[] = {
-
-		{"help",		no_argument,		nullptr,	'h'},
-
-		{"verb",		no_argument,		nullptr,	'v'},
-		{"file",		no_argument,		nullptr,	'f'},
-		{"tbar",		no_argument,		nullptr,	't'},
-		{"edit",		no_argument,		nullptr,	'e'},
-		{"dark",		no_argument,		nullptr,	'd'},
-		{"tick",		no_argument,		nullptr,	'G'},
-		{"grid",		no_argument,		nullptr,	'g'},
-		{"leth",		no_argument,		nullptr,	'L'},
-
-		{"cWeight",		required_argument,	nullptr,	'W'},
-		{"cHeight",		required_argument,	nullptr,	'H'},
-
-		{"tally",		required_argument,	nullptr,	'F'},
-		{"tTitle",		required_argument,	nullptr,	'T'},
-
-		{"fileName",	required_argument,	nullptr,	'o'},
-		{"imgName",		required_argument,	nullptr,	'q'},
-		
-		{"xAxis",		required_argument,	nullptr,	'x'},
-		{"xTitle",		required_argument,	nullptr,	'X'},
-		{"xLab",		no_argument,		nullptr,	'l'},
-		{"xLog",		no_argument,		nullptr,	'i'},
-		{"xMul",		required_argument,	nullptr,	'I'},
-		{"xMin",		required_argument,	nullptr,	'a'},
-		{"xMax",		required_argument,	nullptr,	'A'},
-		
-		{"yAxis",		required_argument,	nullptr,	'y'},		
-		{"yTitle",		required_argument,	nullptr,	'Y'},
-		{"yLab",		no_argument,		nullptr,	'm'},
-		{"yLog",		no_argument,		nullptr,	'j'},
-		{"yMul",		required_argument,	nullptr,	'J'},
-		{"yMin",		required_argument,	nullptr,	'b'},
-		{"yMax",		required_argument,	nullptr,	'B'},
-
-		{"zAxis",		required_argument,	nullptr,	'z'},		
-		{"zTitle",		required_argument,	nullptr,	'Z'},
-		{"zLab",		no_argument,		nullptr,	'n'},
-		{"zLog",		no_argument,		nullptr,	'k'},
-		{"zMul",		required_argument,	nullptr,	'K'},
-		{"zMin",		required_argument,	nullptr,	'c'},
-		{"zMax",		required_argument,	nullptr,	'C'},		
-
-		{"pMin",		required_argument,	nullptr,	'p'},
-		{"pMax",		required_argument,	nullptr,	'P'},
-
-		{nullptr,		no_argument,		nullptr,	0}
-	};
-		
 	while (true) {
 		const auto opt = getopt_long(argc, argv, short_opts, long_opts, nullptr);
 		
@@ -175,9 +131,6 @@ std::string ProcessArgs(int argc, char** argv) {
 			break;
 		case 'v':
 			verb = 1;
-			break;
-		case 'f':
-			file = 1;
 			break;
 		case 't':
 			tbar = 1;
@@ -213,11 +166,17 @@ std::string ProcessArgs(int argc, char** argv) {
 			tTitle = std::string(optarg);
 			break;
 			
-		case 'o':
+		case 'O':
 			fileName = std::string(optarg);
 			break;
 		case 'q':
 			imgName = std::string(optarg);
+			break;
+		case 'o':
+			if (std::string(optarg) == "dat")
+				file = 1;
+			else
+				imgFormat.push_back(std::string(optarg));
 			break;
 			
 		case 'x':

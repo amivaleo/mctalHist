@@ -173,15 +173,22 @@ void customizeMultiGraph(TMultiGraph * graph) {
 void save(TCanvas * c, TObject * obj) {
 	fileOutput.close();
 	if (!file) std::remove(fileName.c_str());
-	size_t counter = 0;
 	std::string output;
 	
-	output = fileName + ".eps";
-	c->SaveAs(output.c_str());
-	output = fileName + ".gif";
-	c->SaveAs(output.c_str());
-	output = fileName + ".root";
-	obj->SaveAs(output.c_str());
+	if (imgFormat.size() > 0) {
+		for (size_t i = 0; i < imgFormat.size(); ++i) {
+			output = fileName + "." + imgFormat[i];
+			if (imgFormat[i] == "root")
+				obj->SaveAs(output.c_str());
+			else 
+				c->Print(output.c_str());
+		}
+	} else {
+		output = fileName + ".gif";
+		c->Print(output.c_str());
+		c->Close();
+	}
+		
 }
 
 #endif

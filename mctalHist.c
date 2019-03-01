@@ -9,6 +9,7 @@ g++ mctalHist.c `root-config --cflags --ldflags --libs` -o mctalHist
 #include <sstream>
 #include <fstream>
 #include <getopt.h>
+#include <limits>
 
 #include "inc/libraries.h"
 #include "inc/addons.h"
@@ -17,7 +18,6 @@ g++ mctalHist.c `root-config --cflags --ldflags --libs` -o mctalHist
 #include "inc/help.h"
 
 int main (int argc, char** argv) {
-
 	std::string tmp;
 	
 	if (argc < 2) {
@@ -33,7 +33,7 @@ int main (int argc, char** argv) {
 		std::cerr << red << "ERROR :: input file doesn't exist!" << reset << std::endl;
 		return 1;
 	}
-	
+
 	// read input file mctal.root
 	TFile *file = new TFile(input.c_str());
 	THnSparseF *s;
@@ -54,6 +54,7 @@ int main (int argc, char** argv) {
 	// print all THnSparse axes if they were not declared in the input bash script
 	if ((xAxis == -1) || (zAxis == -1)) s->Print("all");
 	
+	gStyle->SetOptStat(0);
 	TCanvas *c;
 	
 	// MESH --------------------------------------------------------------------
@@ -183,12 +184,10 @@ int main (int argc, char** argv) {
 			std::cout << blue <<    tab << tab << "│" << reset << std::endl;
 			std::cout << blue << tab << yMin << tab << "┼───────────────────────┐" << reset << std::endl;
 			std::cout << blue <<   tab << tab << xMin << tab << axes[xAxis] << ": '" << xTitle << "'" << tab << xMax << reset << std::endl;
-			std::cout << green << "Press ⏎ to continue…" << reset << std::endl;
-			std::cin.ignore();
 		}
+		
 			
-			
-		TH2D * h = (TH2D *)s->Projection(yAxis, xAxis)->Clone("clone");
+		TH2D * h = (TH2D *)s->Projection(yAxis, xAxis)->Clone(fileName.c_str());
 		customizeHist(h);
 		
 		int entries = h->GetEntries();
@@ -201,16 +200,17 @@ int main (int argc, char** argv) {
 		// set a constant multiplicative factor
 		if (zMul != 1) {
 			std::cout << yellow << "WARNING :: the z axis is multiplied by the constant factor " << zMul << reset << std::endl;
-			for (int i = 1; i < entries; i++) {
-				h->SetBinContent(i, h->GetBinContent(i)*zMul);
-				h->SetBinError(i, h->GetBinError(i)*zMul);
-				if (file) {
-					fileOutput << std::scientific
-					 << i << tab 
-					 << h->GetBinContent(i) << tab 
-					 << h->GetBinError(i) << std::endl;
-				}
-			}
+			h->Scale(zMul);
+//			for (int i = 1; i < entries; i++) {
+//				h->SetBinContent(i, h->GetBinContent(i)*zMul);
+//				h->SetBinError(i, h->GetBinError(i)*zMul);
+//				if (file) {
+//					fileOutput << std::scientific
+//					 << i << tab 
+//					 << h->GetBinContent(i) << tab 
+//					 << h->GetBinError(i) << std::endl;
+//				}
+//			}
 		}
 		
 		// change palette range
@@ -246,7 +246,7 @@ int main (int argc, char** argv) {
 			h->SetMarkerSize(8);
 			h->Draw("cont3 same");
 		}
-
+		
 		save(c, h);
 	
 	// =========================================================================
@@ -281,7 +281,7 @@ int main (int argc, char** argv) {
 		}
 		
 		c = generateCanvas();
-		TH1D * h = (TH1D *)s->Projection(xAxis)->Clone("clone");
+		TH1D * h = (TH1D *)s->Projection(xAxis)->Clone(fileName.c_str());
 		customizeHist(h);
 		
 		if (xLog) {
@@ -318,8 +318,6 @@ int main (int argc, char** argv) {
 			std::cout << blue <<    tab << tab << "│" << reset << std::endl;
 			std::cout << blue << tab << yMin << tab << "┼───────────────────────┐" << reset << std::endl;
 			std::cout << blue <<   tab << tab << xMin << tab << axes[xAxis] << ": '" << xTitle << "'" << tab << xMax << reset << std::endl;
-			std::cout << green << "Press ⏎ to continue…" << reset << std::endl;
-			std::cin.ignore();
 		}
 		
 		tTitle = tTitle == "" ? s->GetTitle() : tTitle;
@@ -350,7 +348,7 @@ int main (int argc, char** argv) {
 			}
 		}
 		
-		if (file) std::cout << "Info in <FileOutput::File>: dat file " << tmp.c_str() << " has been created" << std::endl;
+		if (file) std::cout << "Info in <FileOutput::File>: DAT file " << tmp.c_str() << " has been created" << std::endl;
 		h->Draw("E1 hist");
 		save(c, h);
 	}

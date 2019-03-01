@@ -50,6 +50,7 @@ int cHeight = 800;
 
 std::string tally = "";
 
+std::vector<std::string> imgFormat;
 TImage * img;
 std::ofstream fileOutput (".output.dat");
 

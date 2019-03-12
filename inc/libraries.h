@@ -7,6 +7,7 @@
 #include <TVirtualX.h>
 #include <TVirtualPadEditor.h>
 #include <TGResourcePool.h>
+#include <TF2.h>
 #include <TGListBox.h>
 #include <TGListTree.h>
 #include <TGFSContainer.h>

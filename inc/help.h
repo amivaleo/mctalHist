@@ -115,6 +115,11 @@ void PrintHelp() {
 
 std::string ProcessArgs(int argc, char** argv) {
 
+	if (argc < 2) {
+		std::cout << blue << "Usage: mctalHist [-option VALUE] file.root" << reset << std::endl;
+		std::cout << blue << "The content in square brackets [ ] is optional" << reset << std::endl;
+	}
+
 	std::string input;
 	
 	while (true) {

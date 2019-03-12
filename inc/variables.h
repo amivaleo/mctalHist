@@ -45,8 +45,8 @@ std::string xTitle = "x";
 std::string yTitle = "y";
 std::string zTitle = "z";
 
-int cWidth = 1200;
-int cHeight = 800;
+size_t cWidth = 1200;
+size_t cHeight = 800;
 
 std::string tally = "";
 

@@ -19,21 +19,34 @@ g++ mctalHist.c `root-config --cflags --ldflags --libs` -o mctalHist
 
 int main (int argc, char** argv) {
 	std::string tmp;
-	
-	if (argc < 2) {
-		std::cerr << red << "ERROR :: arguments missing!" << reset << std::endl;
-		std::cerr << blue << "Usage: mctalHist [-option VALUE] file.root" << reset << std::endl;
-		std::cout << blue << "The content in square brackets [ ] is optional" << reset << std::endl;
-		PrintHelp();
-		return 1;
-	}
-
 	std::string input = ProcessArgs(argc, argv);
+	
 	if (!fileExist(input.c_str())) {
 		std::cerr << red << "ERROR :: input file doesn't exist!" << reset << std::endl;
 		return 1;
 	}
+	
+	TApplication * app = new TApplication(input.c_str(), &argc, argv);
+	
+	TCanvas * c = generateCanvas();
+	// use a background image if available
+	if (img) {
+		c->SetFixedAspectRatio(1);
+		TPad *p1 = new TPad("p1","p1",0.1, 0.1, .9, .9);
+		p1->Draw();
+		p1->cd();
+		img->Draw("xxx");
 
+		c->cd();
+		TPad *p2 = new TPad("p2","p2",0., 0., 1., 1.);
+		p2->SetFillStyle(4000);
+		p2->SetFrameFillColor(0);
+		p2->SetFrameFillStyle(0);
+		p2->Draw();
+		p2->cd();
+	}
+	gStyle->SetOptStat(0);
+	
 	// read input file mctal.root
 	TFile *file = new TFile(input.c_str());
 	THnSparseF *s;
@@ -54,13 +67,10 @@ int main (int argc, char** argv) {
 	// print all THnSparse axes if they were not declared in the input bash script
 	if ((xAxis == -1) || (zAxis == -1)) s->Print("all");
 	
-	gStyle->SetOptStat(0);
-	TCanvas *c;
+	fileName = fileName == "" ? tally : fileName;
 	
 	// MESH --------------------------------------------------------------------
 	if (s->GetNdimensions() == 11) {
-		
-		fileName = fileName == "" ? tally : fileName;
 		
 		// select the axis to plot
 		while ((zAxis < 0) || (zAxis > 10)) {
@@ -73,7 +83,7 @@ int main (int argc, char** argv) {
 		// if the axis perpendicular to the map has more than 1 bin, let the user decide what to plot
 		if (s->GetAxis(zAxis)->GetNbins() > 1) {
 
-			if ((zMin == zMax) && (zMin == -99999)) {
+			if ((zMin == 99999) && (zMax == -99999)) {
 				std::cout << blue << tab << "The selected axis has " << s->GetAxis(zAxis)->GetNbins() << " bins." << reset << std::endl;
 				
 				// print all the bins edges for the axis perpendicular to the map
@@ -115,6 +125,7 @@ int main (int argc, char** argv) {
 				std::cin >> tmp;
 				xAxis = getAxisIndex(tmp);
 			} while ((!xAxis) || (!std::cin) || (xAxis > 10));
+			if (verb) std::cout << yellow << "WARNING :: no validation is performed on the inserted values" << reset << std::endl;
 		}
 		if (yAxis == -1) {
 			do {
@@ -133,64 +144,29 @@ int main (int argc, char** argv) {
 			gPad->SetLogy();
 			if (verb) std::cout << yellow << "WARNING :: setting log-scale for y axis" << reset << std::endl;
 		}
-		
-		c = generateCanvas();
-		c->SetMargin(0.1, 0.1, 0.1, 0.1);
-		// use a background image if available
-		if (img) {
-			TPad *p1 = new TPad("p1","p1",0.1, 0.1, .9, .9);
-			p1->Draw();
-			p1->cd();
-			img->Draw();
-			c->cd();
-			TPad *p2 = new TPad("p2","p2",0., 0., 1., 1.);
-			if (zLog) {p2->SetLogz();}
-			p2->SetFillStyle(4000);
-			p2->SetFrameFillColor(0);
-			p2->SetFrameFillStyle(0);
-			p2->Draw();
-			p2->cd();
-		}
-		
-		if (xLog) {
-			gPad->SetLogx();
-			if (verb) std::cout << yellow << "WARNING :: setting log-scale for x axis" << reset << std::endl;
-		}
-		if (yLog) {
-			gPad->SetLogy();
-			if (verb) std::cout << yellow << "WARNING :: setting log-scale for y axis" << reset << std::endl;
-		}
 		if (zLog) {
 			gPad->SetLogz();
 			if (verb) std::cout << yellow << "WARNING :: setting log-scale for z axis" << reset << std::endl;
 		}
 		
-
-		if ((xMin == xMax) && (xMin = -99999)) {
+		if ((xMin == -99999) && (xMax = -99999)) {
 			xMin = s->GetAxis(xAxis)->GetBinLowEdge(s->GetAxis(xAxis)->GetFirst());
-			xMax = s->GetAxis(xAxis)->GetBinUpEdge(s->GetAxis(xAxis)->GetLast());
+			xMax = s->GetAxis(xAxis)->GetBinUpEdge(s->GetAxis(yAxis)->GetLast());
+		} else {
+			std::cout << blue << "User defined range for the x axis: [" << xMin << "; " << xMax << "]" << reset << std::endl;
+			s->GetAxis(xAxis)->SetRangeUser(xMin, xMax);
 		}
-
-		if ((yMin == yMax) && (yMin = -99999)) {
+		
+		if ((yMin == -99999) && (yMax = -99999)) {
 			yMin = s->GetAxis(yAxis)->GetBinLowEdge(s->GetAxis(yAxis)->GetFirst());
 			yMax = s->GetAxis(yAxis)->GetBinUpEdge(s->GetAxis(yAxis)->GetLast());
-		}
-
-		if (verb) {
-			std::cout << blue << "The following TH2 will be drawn:" << reset << std::endl;
-			std::cout << blue << tab << yMax << tab << "┐" << reset << std::endl;
-			std::cout << blue <<    tab << tab << "│" << reset << std::endl;
-			std::cout << blue << axes[yAxis] << ": '" << yTitle << "'" << tab << "│" << tab << tab << "☉ " << axes[zAxis] << " [" << zMin << ", " << zMax << "] : '" << zTitle << "'" << reset << std::endl;
-			std::cout << blue <<    tab << tab << "│" << reset << std::endl;
-			std::cout << blue << tab << yMin << tab << "┼───────────────────────┐" << reset << std::endl;
-			std::cout << blue <<   tab << tab << xMin << tab << axes[xAxis] << ": '" << xTitle << "'" << tab << xMax << reset << std::endl;
+		} else {
+			std::cout << blue << "User defined range for the y axis: [" << yMin << "; " << yMax << "]" << reset << std::endl;
+			s->GetAxis(yAxis)->SetRangeUser(yMin, yMax);
 		}
 		
-			
 		TH2D * h = (TH2D *)s->Projection(yAxis, xAxis)->Clone(fileName.c_str());
 		customizeHist(h);
-		
-		int entries = h->GetEntries();
 		
 		h->SetTitle(tTitle.c_str());
 		
@@ -201,16 +177,6 @@ int main (int argc, char** argv) {
 		if (zMul != 1) {
 			std::cout << yellow << "WARNING :: the z axis is multiplied by the constant factor " << zMul << reset << std::endl;
 			h->Scale(zMul);
-//			for (int i = 1; i < entries; i++) {
-//				h->SetBinContent(i, h->GetBinContent(i)*zMul);
-//				h->SetBinError(i, h->GetBinError(i)*zMul);
-//				if (file) {
-//					fileOutput << std::scientific
-//					 << i << tab 
-//					 << h->GetBinContent(i) << tab 
-//					 << h->GetBinError(i) << std::endl;
-//				}
-//			}
 		}
 		
 		// change palette range
@@ -254,8 +220,7 @@ int main (int argc, char** argv) {
 	// =========================================================================
 		
 		double bin;
-		fileName = fileName == "" ? tally : fileName;
-		
+
 		// select the axis to plot
 		while ((xAxis < 0) || (xAxis > 7)) {
 			std::cout << green << "Select the abiscissae axis [f, d, u, s, m, c, e, t]: " << reset;
@@ -280,7 +245,6 @@ int main (int argc, char** argv) {
 			}
 		}
 		
-		c = generateCanvas();
 		TH1D * h = (TH1D *)s->Projection(xAxis)->Clone(fileName.c_str());
 		customizeHist(h);
 		
@@ -294,7 +258,7 @@ int main (int argc, char** argv) {
 		}
 		
 		// set x and y user ranges
-		if ((xMin == xMax) && (xMin = -99999)) {
+		if ((xMin == -99999) && (xMax = -99999)) {
 			xMin = h->GetXaxis()->GetBinUpEdge(h->GetXaxis()->GetFirst());
 			xMax = h->GetXaxis()->GetBinUpEdge(h->GetXaxis()->GetLast());
 		} else {
@@ -302,7 +266,7 @@ int main (int argc, char** argv) {
 			h->GetXaxis()->SetRangeUser(xMin, xMax);
 		}
 		
-		if ((yMin == yMax) && (yMin = -99999)) {
+		if ((yMin == -99999) && (yMax = -99999)) {
 			yMin = h->GetYaxis()->GetBinLowEdge(h->GetYaxis()->GetFirst());
 			yMax = h->GetYaxis()->GetBinUpEdge(h->GetYaxis()->GetLast());
 		} else {
@@ -348,10 +312,11 @@ int main (int argc, char** argv) {
 			}
 		}
 		
-		if (file) std::cout << "Info in <FileOutput::File>: DAT file " << tmp.c_str() << " has been created" << std::endl;
+		if (file) std::cout << "Info in <FileOutput::File>: dat file " << tmp.c_str() << " has been created" << std::endl;
 		h->Draw("E1 hist");
 		save(c, h);
 	}
 	
+	app->Run();
 	return 0;
 }

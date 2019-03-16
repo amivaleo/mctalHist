@@ -2,6 +2,7 @@
 #define libraries_h
 
 #include <TROOT.h>
+#include <TStyle.h>
 #include <TClass.h>
 #include <TApplication.h>
 #include <TVirtualX.h>
@@ -51,9 +52,10 @@
 #include <TGFontDialog.h>
 #include <TMath.h>
 #include <TImage.h>
-#include <TStyle.h>
 #include <TLegend.h>
 #include <TGraphErrors.h>
 #include <THnSparse.h>
+#include <TPaletteAxis.h>
+
 
 #endif

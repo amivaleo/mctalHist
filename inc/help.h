@@ -1,19 +1,19 @@
 #ifndef help_h
 #define help_h
 
-const char* const short_opts = "hvtedGgLW:H:F:T:O:q:o:x:X:liI:a:A:y:Y:mjJ:b:B:z:Z:nkK:c:C:p:P:";
+const char* const short_opts = "hvbedGgLW:H:F:T:O:q:o:X:Y:Z:A:t:Vlc:m:M:p:P:C:";
 const option long_opts[] = {
 	{"help",		no_argument,		nullptr,	'h'},
 
 	{"verb",		no_argument,		nullptr,	'v'},
-	{"tbar",		no_argument,		nullptr,	't'},
+	{"tbar",		no_argument,		nullptr,	'b'},
 	{"edit",		no_argument,		nullptr,	'e'},
 	{"dark",		no_argument,		nullptr,	'd'},
 	{"tick",		no_argument,		nullptr,	'G'},
 	{"grid",		no_argument,		nullptr,	'g'},
 	{"leth",		no_argument,		nullptr,	'L'},
 
-	{"cWeight",		required_argument,	nullptr,	'W'},
+	{"cWidth",		required_argument,	nullptr,	'W'},
 	{"cHeight",		required_argument,	nullptr,	'H'},
 
 	{"tally",		required_argument,	nullptr,	'F'},
@@ -23,32 +23,22 @@ const option long_opts[] = {
 	{"imgName",		required_argument,	nullptr,	'q'},
 	{"imgFormat",	required_argument,	nullptr,	'o'},
 	
-	{"xAxis",		required_argument,	nullptr,	'x'},
-	{"xTitle",		required_argument,	nullptr,	'X'},
-	{"xLab",		no_argument,		nullptr,	'l'},
-	{"xLog",		no_argument,		nullptr,	'i'},
-	{"xMul",		required_argument,	nullptr,	'I'},
-	{"xMin",		required_argument,	nullptr,	'a'},
-	{"xMax",		required_argument,	nullptr,	'A'},
+	{"xAxis",		required_argument,	nullptr,	'X'},
+	{"yAxis",		required_argument,	nullptr,	'Y'},
+	{"zAxis",		required_argument,	nullptr,	'Z'},
+
+	{"whichAxis",	required_argument,	nullptr,	'A'},
+	{"axisTitle",	required_argument,	nullptr,	't'},
+	{"axisValues",	no_argument,		nullptr,	'V'},
+	{"axisLog",		no_argument,		nullptr,	'l'},
+	{"axisMul",		required_argument,	nullptr,	'c'},
+	{"axisMin",		required_argument,	nullptr,	'm'},
+	{"axisMax",		required_argument,	nullptr,	'M'},
 	
-	{"yAxis",		required_argument,	nullptr,	'y'},		
-	{"yTitle",		required_argument,	nullptr,	'Y'},
-	{"yLab",		no_argument,		nullptr,	'm'},
-	{"yLog",		no_argument,		nullptr,	'j'},
-	{"yMul",		required_argument,	nullptr,	'J'},
-	{"yMin",		required_argument,	nullptr,	'b'},
-	{"yMax",		required_argument,	nullptr,	'B'},
-
-	{"zAxis",		required_argument,	nullptr,	'z'},		
-	{"zTitle",		required_argument,	nullptr,	'Z'},
-	{"zLab",		no_argument,		nullptr,	'n'},
-	{"zLog",		no_argument,		nullptr,	'k'},
-	{"zMul",		required_argument,	nullptr,	'K'},
-	{"zMin",		required_argument,	nullptr,	'c'},
-	{"zMax",		required_argument,	nullptr,	'C'},		
-
 	{"pMin",		required_argument,	nullptr,	'p'},
 	{"pMax",		required_argument,	nullptr,	'P'},
+	
+	{"contour",		required_argument,	nullptr,	'C'},
 
 	{nullptr,		no_argument,		nullptr,	0}
 	};
@@ -75,32 +65,22 @@ const std::string optionDescription[] = {
 	
 	"Select the output file formats [dat, eps, gif, jpg, pdf, png, ps, root, svg]",
 	
-	"Set x axis",
-	"Set x axis title",
-	"Hide x values",
-	"Set log scale on x axis",
-	"Multiply the x axis values by a constant factor",
-	"Set x axis user range [minimum value]",
-	"Set x axis user range [maximum value]",
+	"Set what the x axis will represent",
+	"Set what the y axis will represent",
+	"Set what the z axis will represent",
 	
-	"Set y axis",
-	"Set y axis title",
-	"Hide y values",
-	"Set log scale on y axis",
-	"Multiply the y axis values by a constant factor",
-	"Set y axis user range [minimum value]",
-	"Set y axis user range [maximum value]",
-	
-	"Set z axis",
-	"Set z axis title",
-	"Hide z values",
-	"Set log scale on z axis",
-	"Multiply the z axis values by a constant factor",
-	"Set z axis user range [minimum value]",
-	"Set z axis user range [maximum value]",
+	"Select the axis for which you want to set options",
+	"Set axis title",
+	"Hide values",
+	"Set log scale",
+	"Multiply values by a constant factor",
+	"Set axis user range [minimum value]",
+	"Set axis user range [maximum value]",
 	
 	"Set coloured palette minimum value",
-	"Set coloured palette maximum value"
+	"Set coloured palette maximum value",
+	
+	"Draw a contour line at given value"
 	};
 
 
@@ -120,6 +100,7 @@ std::string ProcessArgs(int argc, char** argv) {
 		std::cout << blue << "The content in square brackets [ ] is optional" << reset << std::endl;
 	}
 
+	std::string whichAxis = "";
 	std::string input;
 	
 	while (true) {
@@ -131,19 +112,19 @@ std::string ProcessArgs(int argc, char** argv) {
 		}
 
 		switch (opt) {
+		
 		case 'h':
 			PrintHelp();
 			break;
 		case 'v':
 			verb = 1;
 			break;
-		case 't':
+		case 'b':
 			tbar = 1;
 			break;
 		case 'e':
 			edit = 1;
 			break;
-
 		case 'd':
 			dark = 1;
 			break;
@@ -183,79 +164,70 @@ std::string ProcessArgs(int argc, char** argv) {
 			else
 				imgFormat.push_back(std::string(optarg));
 			break;
-			
-		case 'x':
-			xAxis = getAxisIndex(optarg);
-			break;
+		
 		case 'X':
-			xTitle = std::string(optarg);
-			break;
-		case 'l':
-			xLab = true;
-			break;
-		case 'i':
-			xLog = true;
-			break;
-		case 'I':
-			xMul = std::stod(optarg);
-			break;
-		case 'a':
-			xMin = std::stod(optarg);
-			break;
-		case 'A':
-			xMax = std::stod(optarg);
-			break;
-			
-
-		case 'y':
-			yAxis = getAxisIndex(optarg);
+			xAxis = getAxisIndex(std::string(optarg));
 			break;
 		case 'Y':
-			yTitle = std::string(optarg);
-			break;
-		case 'm':
-			yLab = true;
-			break;
-		case 'j':
-			yLog = true;
-			break;
-		case 'J':
-			yMul = std::stod(optarg);
-			break;
-		case 'b':
-			yMin = std::stod(optarg);
-			break;
-		case 'B':
-			yMax = std::stod(optarg);
-			break;
-
-		case 'z':
-			zAxis = getAxisIndex(optarg);
+			yAxis = getAxisIndex(std::string(optarg));
 			break;
 		case 'Z':
-			zTitle = std::string(optarg);
-			break;
-		case 'n':
-			zLab = true;
-			break;
-		case 'k':
-			zLog = true;
-			break;
-		case 'K':
-			zMul = std::stod(optarg);
-			break;
-		case 'c':
-			zMin = std::stod(optarg);
-			break;
-		case 'C':
-			zMax = std::stod(optarg);
+			zAxis = getAxisIndex(std::string(optarg));
 			break;
 			
+		case 'A':
+			whichAxis = std::string(optarg);
+			if ((whichAxis != "x") && (whichAxis != "y") && (whichAxis != "z")) {
+				std::cerr << red << "ERROR :: invalid axis selected. Available options: [-A x] [-A y] [-A z]" << reset << std::endl;
+				exit(1);
+			}
+			break;
+			
+		case 't':
+			if (whichAxis == "x") xTitle = std::string(optarg);
+			else if (whichAxis == "y") yTitle = std::string(optarg);
+			else if (whichAxis == "z") zTitle = std::string(optarg);
+			break;
+
+		case 'V':
+			if (whichAxis == "x") xLab = true;
+			else if (whichAxis == "y") yLab = true;
+			else if (whichAxis == "z") zLab = true;
+			break;
+		
+		case 'l':
+			if (whichAxis == "x") xLog = true;
+			else if (whichAxis == "y") yLog = true;
+			else if (whichAxis == "z") zLog = true;
+			break;
+		
+		case 'c':
+			if (whichAxis == "x") xMul = std::stod(optarg);
+			else if (whichAxis == "y") yMul = std::stod(optarg);
+			else if (whichAxis == "z") zMul = std::stod(optarg);
+			break;
+		
+		case 'm':
+			if (whichAxis == "x") xMin = std::stod(optarg);
+			else if (whichAxis == "y") yMin = std::stod(optarg);
+			else if (whichAxis == "z") zMin = std::stod(optarg);
+			break;
+		
+		case 'M':
+			if (whichAxis == "x") xMax = std::stod(optarg);
+			else if (whichAxis == "y") yMax = std::stod(optarg);
+			else if (whichAxis == "z") zMax = std::stod(optarg);
+			break;
+		
 		case 'p':
 			pMin = std::stod(optarg);
 			break;
 		case 'P':
 			pMax = std::stod(optarg);
+			break;
+		
+		case 's':
+			contour.push_back(std::stod(optarg));
 			break;
 		}
 		

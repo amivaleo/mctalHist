@@ -26,8 +26,6 @@ int main (int argc, char** argv) {
 		return 1;
 	}
 	
-	TApplication * app = new TApplication(input.c_str(), &argc, argv);
-	
 	TCanvas * c = generateCanvas();
 	// use a background image if available
 	if (img) {
@@ -200,21 +198,21 @@ int main (int argc, char** argv) {
 			if (pMin != pMax) fileOutput << "# palette range - from " << pMin << " to " << pMax << std::endl;
 		}
 		if (file) fileOutput << "#---" << tab << "Value-------" << tab << "Stat_err----" << std::endl;
+			
+//		TPaletteAxis *palette = new TPaletteAxis(4.040115,-19.94737,4.498567,-4.052632,h);
+//		palette->SetX2NDC(0.93);
+//		h->GetListOfFunctions()->Add(palette);
 		
+		h->DrawCopy("colz");
 		
-		h->Draw("colz");
-		
-		// draw contours if any
-		if (sizeof(contours)/sizeof(double) != 0) {
-			h->SetContour(sizeof(contours)/sizeof(double),contours);
-			h->SetLineColor(kRed);
-			h->SetLineWidth(2);
-			h->SetMarkerSize(8);
+		if (contour.size() > 0) {
+			h->SetContour(contour.size(), &contour[0]);
 			h->Draw("cont3 same");
+			h->SetLineColor(dark);
 		}
 		
 		save(c, h);
-	
+		
 	// =========================================================================
 	} else {	// TALLY -------------------------------------------------------
 	// =========================================================================
@@ -276,12 +274,12 @@ int main (int argc, char** argv) {
 		
 		if (verb) {
 			std::cout << blue << "The following TH1 will be drawn:" << reset << std::endl;
-			std::cout << blue << tab << yMax << tab << "┐" << reset << std::endl;
-			std::cout << blue <<    tab << tab << "│" << reset << std::endl;
-			std::cout << blue << "y: '" << yTitle << "'" << tab << tab << "│" << reset << std::endl;
-			std::cout << blue <<    tab << tab << "│" << reset << std::endl;
-			std::cout << blue << tab << yMin << tab << "┼───────────────────────┐" << reset << std::endl;
-			std::cout << blue <<   tab << tab << xMin << tab << axes[xAxis] << ": '" << xTitle << "'" << tab << xMax << reset << std::endl;
+			std::cout << blue << std::setw(5) << std::right << " "  << "y: '" << yTitle << "'" << reset << std::endl;
+			std::cout << blue << std::setw(5) << std::right << yMax << "┐" << reset << std::endl;
+			std::cout << blue << std::setw(5) << std::right << " "  << "│" << reset << std::endl;
+			std::cout << blue << std::setw(5) << std::right << " "  << "│" << reset << std::endl;
+			std::cout << blue << std::setw(5) << std::right << yMin << "┼───────────────────────┐" << tab << "x: '" << xTitle << "'" << reset << std::endl;
+			std::cout << blue << std::setw(5) << std::right << " " << std::setw(24) << std::left << xMin << xMax << reset << std::endl;
 		}
 		
 		tTitle = tTitle == "" ? s->GetTitle() : tTitle;
@@ -296,12 +294,14 @@ int main (int argc, char** argv) {
 		else if ((yMul != leth) && (yMul != 1)) std::cout << yellow << "WARNING :: the y axis is multiplied by the constant factor " << yMul << reset << std::endl;
 		
 		// write the output file if requested
-		if (file) fileOutput << "#---" << tab << "xup---------" << tab << "Value-------" << tab << "Stat_err----" << tab << "Rel_err-" << std::endl;
+		if (file) fileOutput << "# Title: " << tTitle << std::endl;
+		if (file) fileOutput << "# x axis: " << axes[xAxis] << tab << "Title: " << xTitle << tab << "Range: [" << xMin << ", " << xMax << "] * " << xMul << std::endl;
+		if (file) fileOutput << "# y axis: " << tab << "Title: " << yTitle << tab << "Range: [" << yMin << ", " << yMax << "] * " << yMul << std::endl;
+		if (file) fileOutput << "xup---------" << tab << "Value-------" << tab << "Stat_err----" << tab << "Rel_err-" << std::endl;
 		for (size_t i = 1; i <= h->GetNbinsX(); i++) {
 			h->SetBinError(i, h->GetBinError(i)*yMul);		// mctal2root export abs errors before scaling values by yMul
 			h->SetBinContent(i, h->GetBinContent(i)*yMul);
 			if (file) fileOutput << std::scientific 
-			 << std::setfill('0') << std::setw(4) << h->GetBin(i) << tab 
 			 << h->GetBinLowEdge(i+1) << tab 
 			 << h->GetBinContent(i) << tab 
 			 << h->GetBinError(i) << tab;
@@ -313,10 +313,10 @@ int main (int argc, char** argv) {
 		}
 		
 		if (file) std::cout << "Info in <FileOutput::File>: dat file " << tmp.c_str() << " has been created" << std::endl;
+		
 		h->Draw("E1 hist");
 		save(c, h);
 	}
 	
-	app->Run();
 	return 0;
 }

@@ -65,7 +65,6 @@ void customizeHist(TH1 * hist) {
 	hist->SetLineWidth(2);
 	gStyle->SetNumberContours(50);
 	gStyle->SetPalette(kRainBow,0,0.9);
-	gStyle->Set
 	if (!xLab) {
 		hist->GetXaxis()->SetLabelSize(0);
 		hist->GetXaxis()->SetTitleOffset(0.5);

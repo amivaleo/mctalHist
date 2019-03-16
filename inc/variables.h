@@ -33,8 +33,7 @@ double xMul(1);
 double yMul(1);
 double zMul(1);
 
-double contours[] = {};
-
+std::vector<double> contour;
 std::string legendItem[] = {};
 
 std::string fileName = "";

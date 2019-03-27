@@ -1,13 +1,11 @@
 #ifndef help_h
 #define help_h
 
-const char* const short_opts = "hvbedGgLW:H:F:T:O:q:o:X:Y:Z:A:t:Vlc:m:M:p:P:C:";
+const char* const short_opts = "hvbedGgLW:H:F:T:O:q:o:X:Y:Z:B:A:t:Vlc:m:M:p:P:C:";
 const option long_opts[] = {
 	{"help",		no_argument,		nullptr,	'h'},
 
-	{"verb",		no_argument,		nullptr,	'v'},
 	{"tbar",		no_argument,		nullptr,	'b'},
-	{"edit",		no_argument,		nullptr,	'e'},
 	{"dark",		no_argument,		nullptr,	'd'},
 	{"tick",		no_argument,		nullptr,	'G'},
 	{"grid",		no_argument,		nullptr,	'g'},
@@ -27,6 +25,8 @@ const option long_opts[] = {
 	{"yAxis",		required_argument,	nullptr,	'Y'},
 	{"zAxis",		required_argument,	nullptr,	'Z'},
 
+	{"axisBin",		required_argument,	nullptr,	'B'},
+	
 	{"whichAxis",	required_argument,	nullptr,	'A'},
 	{"axisTitle",	required_argument,	nullptr,	't'},
 	{"axisValues",	no_argument,		nullptr,	'V'},
@@ -47,8 +47,6 @@ const std::string optionDescription[] = {
 	"Show help",
 	
 	"Verbose output",
-	"Show toolbar",
-	"Show editor",
 	"Dark variant",
 	"Show ticks",
 	"Show grid",
@@ -119,12 +117,6 @@ std::string ProcessArgs(int argc, char** argv) {
 		case 'v':
 			verb = 1;
 			break;
-		case 'b':
-			tbar = 1;
-			break;
-		case 'e':
-			edit = 1;
-			break;
 		case 'd':
 			dark = 1;
 			break;
@@ -175,12 +167,12 @@ std::string ProcessArgs(int argc, char** argv) {
 			zAxis = getAxisIndex(std::string(optarg));
 			break;
 			
+		case 'B':
+			axesBin[getAxisIndex(whichAxis)] = std::stoi(optarg);
+			break;
+
 		case 'A':
 			whichAxis = std::string(optarg);
-			if ((whichAxis != "x") && (whichAxis != "y") && (whichAxis != "z")) {
-				std::cerr << red << "ERROR :: invalid axis selected. Available options: [-A x] [-A y] [-A z]" << reset << std::endl;
-				exit(1);
-			}
 			break;
 			
 		case 't':

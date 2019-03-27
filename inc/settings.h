@@ -3,8 +3,6 @@
 
 #include "variables.h"
 
-edit = true;	// show editor?
-tbar(true);	// show toolbar?
 file(true);	// write file with hist/graph data?
 verb(true);	// verbose?
 dark(false);	// dark hist/graph?

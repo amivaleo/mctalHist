@@ -6,6 +6,7 @@ g++ mctalHist.c `root-config --cflags --ldflags --libs` -o mctalHist
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <fstream>
 #include <getopt.h>
@@ -231,15 +232,24 @@ int main (int argc, char** argv) {
 		for (size_t i = 0; i < s->GetNdimensions(); i++) {
 			if ((i != xAxis) && (s->GetAxis(i)->GetNbins() > 1)) {
 				fileName += "-" + axes[i];
-				std::cout << blue << "Axis " << axes[i] << " has " << s->GetAxis(i)->GetNbins() << " bins" << reset << std::endl;
-				std::cout << green << tab << "Select the bin for the " << axes[i] << " axis [a :: all bins] [1-" << s->GetAxis(i)->GetNbins() << "]: " << reset;
-				std::cin >> tmp;
+				std::cout << blue << "Axis " << axes[i] << " has " << s->GetAxis(i)->GetNbins() << " bins" << reset;
 				
-				if (tmp != "a") {
-					bin = std::stoi(tmp);
-					fileName += to_string(bin);
-					s->GetAxis(i)->SetRange(bin, bin);
-				} else std::cout << yellow << "WARNING :: all bins will be plotted" << reset << std::endl;
+				if (axesBin[i] == 0) {
+					std::cout << std::endl;
+					std::cout << green << tab << "Select the bin for the " << axes[i] << " axis [a :: all bins] [1-" << s->GetAxis(i)->GetNbins() << "]: " << reset;
+					std::cin >> tmp;
+				
+					if (tmp != "a") {
+						bin = std::stoi(tmp);
+						fileName += to_string(bin);
+						s->GetAxis(i)->SetRange(bin, bin);
+					} else std::cout << yellow << "WARNING :: all bins will be plotted" << reset << std::endl;
+				
+				} else {
+					fileName += to_string(axesBin[i]);
+					s->GetAxis(i)->SetRange(axesBin[i], axesBin[i]);
+					std::cout << blue << ". Selected bin " << axesBin[i] << reset << std::endl;
+				}
 			}
 		}
 		
@@ -278,8 +288,8 @@ int main (int argc, char** argv) {
 			std::cout << blue << std::setw(5) << std::right << yMax << "┐" << reset << std::endl;
 			std::cout << blue << std::setw(5) << std::right << " "  << "│" << reset << std::endl;
 			std::cout << blue << std::setw(5) << std::right << " "  << "│" << reset << std::endl;
-			std::cout << blue << std::setw(5) << std::right << yMin << "┼───────────────────────┐" << tab << "x: '" << xTitle << "'" << reset << std::endl;
-			std::cout << blue << std::setw(5) << std::right << " " << std::setw(24) << std::left << xMin << xMax << reset << std::endl;
+			std::cout << blue << std::setw(5) << std::right << yMin << "┼─────────┐" << tab << "x: '" << xTitle << "'" << reset << std::endl;
+			std::cout << blue << std::setw(5) << std::right << " " << std::setw(10) << std::left << xMin << xMax << reset << std::endl;
 		}
 		
 		tTitle = tTitle == "" ? s->GetTitle() : tTitle;
@@ -297,7 +307,7 @@ int main (int argc, char** argv) {
 		if (file) fileOutput << "# Title: " << tTitle << std::endl;
 		if (file) fileOutput << "# x axis: " << axes[xAxis] << tab << "Title: " << xTitle << tab << "Range: [" << xMin << ", " << xMax << "] * " << xMul << std::endl;
 		if (file) fileOutput << "# y axis: " << tab << "Title: " << yTitle << tab << "Range: [" << yMin << ", " << yMax << "] * " << yMul << std::endl;
-		if (file) fileOutput << "xup---------" << tab << "Value-------" << tab << "Stat_err----" << tab << "Rel_err-" << std::endl;
+		if (file) fileOutput << "#xup--------" << tab << "Value-------" << tab << "Stat_err----" << tab << "Rel_err-" << std::endl;
 		for (size_t i = 1; i <= h->GetNbinsX(); i++) {
 			h->SetBinError(i, h->GetBinError(i)*yMul);		// mctal2root export abs errors before scaling values by yMul
 			h->SetBinContent(i, h->GetBinContent(i)*yMul);

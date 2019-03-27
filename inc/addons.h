@@ -52,6 +52,7 @@ const size_t color[] = {
 	kPink + 3
 	};
 
-const std::vector<std::string> axes = {"f", "d", "u", "s", "m", "c", "e", "t", "i", "j", "k"};
+const std::vector<std::string> axes =	{"f", "d", "u", "s", "m", "c", "e", "t", "i", "j", "k"};
+std::vector<size_t> axesBin = 			{ 0,   0,   0,   0,   0,   0,   0,};
 
 #endif

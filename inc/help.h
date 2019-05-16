@@ -4,19 +4,20 @@
 const char* const short_opts = "hvbedGgLW:H:F:T:O:q:o:X:Y:Z:B:A:t:Vlc:m:M:p:P:C:";
 const option long_opts[] = {
 	{"help",		no_argument,		nullptr,	'h'},
-
+	
 	{"tbar",		no_argument,		nullptr,	'b'},
 	{"dark",		no_argument,		nullptr,	'd'},
 	{"tick",		no_argument,		nullptr,	'G'},
 	{"grid",		no_argument,		nullptr,	'g'},
 	{"leth",		no_argument,		nullptr,	'L'},
-
+	
 	{"cWidth",		required_argument,	nullptr,	'W'},
 	{"cHeight",		required_argument,	nullptr,	'H'},
-
+	
 	{"tally",		required_argument,	nullptr,	'F'},
 	{"tTitle",		required_argument,	nullptr,	'T'},
-
+	{"error",		no_argument,		nullptr,	'e'},
+	
 	{"fileName",	required_argument,	nullptr,	'O'},
 	{"imgName",		required_argument,	nullptr,	'q'},
 	{"imgFormat",	required_argument,	nullptr,	'o'},
@@ -24,7 +25,7 @@ const option long_opts[] = {
 	{"xAxis",		required_argument,	nullptr,	'X'},
 	{"yAxis",		required_argument,	nullptr,	'Y'},
 	{"zAxis",		required_argument,	nullptr,	'Z'},
-
+	
 	{"axisBin",		required_argument,	nullptr,	'B'},
 	
 	{"whichAxis",	required_argument,	nullptr,	'A'},
@@ -39,7 +40,7 @@ const option long_opts[] = {
 	{"pMax",		required_argument,	nullptr,	'P'},
 	
 	{"contour",		required_argument,	nullptr,	'C'},
-
+	
 	{nullptr,		no_argument,		nullptr,	0}
 	};
 
@@ -57,6 +58,7 @@ const std::string optionDescription[] = {
 	
 	"Select the tally to plot",
 	"Set the graph title",
+	"Show error map instead of tmesh values (only for tmesh)",
 	
 	"Set output files name",
 	"Specify the name for the background image",
@@ -142,6 +144,10 @@ std::string ProcessArgs(int argc, char** argv) {
 			break;
 		case 'T':
 			tTitle = std::string(optarg);
+			break;
+		
+		case 'e':
+			error = 1;
 			break;
 			
 		case 'O':

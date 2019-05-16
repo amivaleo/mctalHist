@@ -15,6 +15,8 @@ bool xLog(false);	// x axis log-scale?
 bool yLog(false);	// y axis log-scale?
 bool zLog(false);	// z axis log-scale?
 
+bool error(false);
+
 int xAxis = -1;
 int yAxis = -1;
 int zAxis = -1;

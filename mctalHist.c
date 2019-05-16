@@ -82,7 +82,7 @@ int main (int argc, char** argv) {
 		// if the axis perpendicular to the map has more than 1 bin, let the user decide what to plot
 		if (s->GetAxis(zAxis)->GetNbins() > 1) {
 
-			if ((zMin == 99999) && (zMax == -99999)) {
+			if ((zMin == -99999) && (zMax == -99999)) {
 				std::cout << blue << tab << "The selected axis has " << s->GetAxis(zAxis)->GetNbins() << " bins." << reset << std::endl;
 				
 				// print all the bins edges for the axis perpendicular to the map
@@ -90,18 +90,16 @@ int main (int argc, char** argv) {
 				for (size_t i = 0; i <= s->GetAxis(zAxis)->GetNbins(); i++) std::cout << blue << s->GetAxis(zAxis)->GetBinUpEdge(i) << reset << "  ";
 				std::cout << std::endl;
 				
-				if (verb) {
-					std::cout << yellow << "WARNING :: note that for each bin, the following logic apply: [a; b)" << reset << std::endl;
-					std::cout << yellow << tab << "for example, if you have ... 3  -  4  -  5  -  6 ... and you enter 5, then you get this bin: [5; 10)" << reset << std::endl;
-				}
+				std::cout << yellow << "WARNING :: do not select exact bin edge values. If you want to select bin [1, 2], insert 1.001 and 1.999" << reset << std::endl;
+				std::cout << yellow << tab << "You can preferentially select one single value in the bin of interest. If you want to select bin [1, 2], you can insert 1.5 and 1.5" << reset << std::endl;
 				
 				// let the user select to sum all bins content or not
-				std::cout << green << "Select the minimum [a :: all bins]: " << reset;
+				std::cout << green << "Select the low edge [a :: all bins]: " << reset;
 				std::cin >> tmp;
 				
 				if (tmp != "a") {
 					zMin = std::stod(tmp);
-					std::cout << green << "Select the maximum: " << reset;
+					std::cout << green << "Select the up edge: " << reset;
 					std::cin >> zMax;
 					zMin = s->GetAxis(zAxis)->GetBinLowEdge(s->GetAxis(zAxis)->FindFixBin(zMax));
 					zMax = s->GetAxis(zAxis)->GetBinUpEdge(s->GetAxis(zAxis)->FindFixBin(zMax));
@@ -177,6 +175,12 @@ int main (int argc, char** argv) {
 			std::cout << yellow << "WARNING :: the z axis is multiplied by the constant factor " << zMul << reset << std::endl;
 			h->Scale(zMul);
 		}
+		
+		if (error)
+			for (Int_t i = 1; i <= h->GetNbinsX(); i++)
+				for (Int_t j = 1; j <= h->GetNbinsY(); j++)
+					h->SetBinContent(i, j, h->GetBinError(h->GetBin(i, j)) / h->GetBinContent(h->GetBin(i, j)));
+			
 		
 		// change palette range
 		if (pMin != pMax) {

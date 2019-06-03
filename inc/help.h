@@ -17,9 +17,9 @@ const option long_opts[] = {
 	{"tally",		required_argument,	nullptr,	'F'},
 	{"tTitle",		required_argument,	nullptr,	'T'},
 
-	{"fileName",	required_argument,	nullptr,	'O'},
+	{"fileName",		required_argument,	nullptr,	'O'},
 	{"imgName",		required_argument,	nullptr,	'q'},
-	{"imgFormat",	required_argument,	nullptr,	'o'},
+	{"imgFormat",		required_argument,	nullptr,	'o'},
 	
 	{"xAxis",		required_argument,	nullptr,	'X'},
 	{"yAxis",		required_argument,	nullptr,	'Y'},
@@ -27,9 +27,9 @@ const option long_opts[] = {
 
 	{"axisBin",		required_argument,	nullptr,	'B'},
 	
-	{"whichAxis",	required_argument,	nullptr,	'A'},
-	{"axisTitle",	required_argument,	nullptr,	't'},
-	{"axisValues",	no_argument,		nullptr,	'V'},
+	{"whichAxis",		required_argument,	nullptr,	'A'},
+	{"axisTitle",		required_argument,	nullptr,	't'},
+	{"axisValues",		no_argument,		nullptr,	'V'},
 	{"axisLog",		no_argument,		nullptr,	'l'},
 	{"axisMul",		required_argument,	nullptr,	'c'},
 	{"axisMin",		required_argument,	nullptr,	'm'},
@@ -218,7 +218,7 @@ std::string ProcessArgs(int argc, char** argv) {
 			pMax = std::stod(optarg);
 			break;
 		
-		case 's':
+		case 'C':
 			contour.push_back(std::stod(optarg));
 			break;
 		}

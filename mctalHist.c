@@ -224,13 +224,13 @@ int main (int argc, char** argv) {
 //		gStyle->SetNumberContours(NCont);
 		
 		
-		
 		h->SetMarkerSize(0.5);
 		gStyle->SetTextSize(0.08);
 		h->DrawCopy("colz");
 
 		if (contour.size() > 0) {
 			h->SetContour(contour.size(), &contour[0]);
+			h->SetLineWidth(1);
 			h->SetLineColor(dark);
 			h->Draw("cont3 same");
 		}

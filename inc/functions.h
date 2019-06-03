@@ -27,7 +27,7 @@ TCanvas * generateCanvas() {
 		cHeight = img->GetHeight();
 	}
 	TCanvas * c = new TCanvas(fileName.c_str(), fileName.c_str(), cWidth, cHeight);
-	//            L    R    D    U
+//                L    R    D    U
 //	c->SetMargin(0.1, 0.1, 0.1, 0.1);
 	if (tbar) c->ToggleEventStatus();
 	if (edit) c->ToggleEditor();
@@ -174,7 +174,7 @@ void save(TCanvas * c, TObject * obj) {
 	fileOutput.close();
 	if (!file) std::remove(fileName.c_str());
 	std::string output;
-	
+
 	if (imgFormat.size() > 0) {
 		for (size_t i = 0; i < imgFormat.size(); ++i) {
 			output = fileName + "." + imgFormat[i];

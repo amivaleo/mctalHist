@@ -224,7 +224,7 @@ std::string ProcessArgs(int argc, char** argv) {
 			pMax = std::stod(optarg);
 			break;
 		
-		case 's':
+		case 'C':
 			contour.push_back(std::stod(optarg));
 			break;
 		}

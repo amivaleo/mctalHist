@@ -1,5 +1,5 @@
 /*
-g++ mctalHist.c `root-config --cflags --ldflags --libs` -o mctalHist
+g++ mctalHist.c `root-config --cflags --ldflags --libs` -o mctalHist && mv mctalHist ~/.local/bin
 */
 
 #include <math.h>
@@ -13,7 +13,6 @@ g++ mctalHist.c `root-config --cflags --ldflags --libs` -o mctalHist
 #include <limits>
 
 #include "inc/libraries.h"
-#include "inc/addons.h"
 #include "inc/variables.h"
 #include "inc/functions.h"
 #include "inc/help.h"
@@ -30,14 +29,13 @@ int main (int argc, char** argv) {
 	TCanvas * c = generateCanvas();
 	// use a background image if available
 	if (img) {
-		c->SetFixedAspectRatio(1);
-		TPad *p1 = new TPad("p1","p1",0.1, 0.1, .9, .9);
-		p1->Draw();
-		p1->cd();
-		img->Draw("xxx");
+		TPad * background = new TPad("background", "background", 0.1, 0.1, .9, .9);
+		background->Draw();
+		background->cd();
+		img->Draw();
 
 		c->cd();
-		TPad *p2 = new TPad("p2","p2",0., 0., 1., 1.);
+		TPad * p2 = new TPad("p2", "p2", 0., 0., 1., 1.);
 		p2->SetFillStyle(4000);
 		p2->SetFrameFillColor(0);
 		p2->SetFrameFillStyle(0);
@@ -181,7 +179,6 @@ int main (int argc, char** argv) {
 				for (Int_t j = 1; j <= h->GetNbinsY(); j++)
 					h->SetBinContent(i, j, h->GetBinError(h->GetBin(i, j)) / h->GetBinContent(h->GetBin(i, j)));
 			
-		
 		// change palette range
 		if (pMin != pMax) {
 			h->GetZaxis()->SetRangeUser(pMin, pMax);
@@ -203,17 +200,32 @@ int main (int argc, char** argv) {
 			if (pMin != pMax) fileOutput << "# palette range - from " << pMin << " to " << pMax << std::endl;
 		}
 		if (file) fileOutput << "#---" << tab << "Value-------" << tab << "Stat_err----" << std::endl;
-			
-//		TPaletteAxis *palette = new TPaletteAxis(4.040115,-19.94737,4.498567,-4.052632,h);
-//		palette->SetX2NDC(0.93);
-//		h->GetListOfFunctions()->Add(palette);
+
+		if (pMax == pMin) {
+			pMax = h->GetMaximum();
+			pMin = h->GetMinimum();
+		}
+		Double_t vCut = 1.5;
+		Double_t pCut = (vCut - pMin)/(pMax - pMin);
 		
+		const Int_t N = 4;
+		const Int_t NCont = 800;
+		Double_t R[N] = {0.00, 0.00, 0.20, 1.00};
+		Double_t G[N] = {1.00, 0.20, 0.00, 0.00};
+		Double_t B[N] = {0.00, 0.00, 0.00, 0.00};
+		Double_t s[N] = {0.00, pCut, pCut + 0.0001, 1.00};
+		
+		TColor::CreateGradientColorTable(N, s, R, G, B, NCont);
+		gStyle->SetNumberContours(NCont);
+		
+		h->SetMarkerSize(0.5);
+		gStyle->SetTextSize(0.08);
 		h->DrawCopy("colz");
-		
+
 		if (contour.size() > 0) {
 			h->SetContour(contour.size(), &contour[0]);
-			h->Draw("cont3 same");
 			h->SetLineColor(dark);
+			h->Draw("cont3 same");
 		}
 		
 		save(c, h);

@@ -1,18 +1,30 @@
 #!/bin/bash
 
-./mH \
-	-t \
+mctal2root ../ssr01.m
+
+mctalHist \
 	-v \
-	-f \
-	-W 900 \
-	-H 900 \
-	--tally rmesh81 \
-	--tTitle "Integrated neutron flux" \
-	--xAxis j \
-	--xTitle "x [cm]" \
-	--yAxis k \
-	--yTitle "y [cm]" \
-	--zAxis i \
-	--zTitle "[n/cm^{2}/sec]" \
-	--zLog \
- mctal.root
+	-W 1600 \
+	-H 400 \
+	--fileName meshDose \
+	--tally rmesh61 \
+	--tTitle "Neutron dose rate map" \
+	--xAxis i \
+	--yAxis j \
+	--zAxis k \
+	-A x \
+	--axisTitle "x [cm]" \
+	-A y \
+	--axisTitle "y [cm]" \
+	-A z \
+	--axisTitle "[#mu SV/h]" \
+	--axisLog \
+	--axisMin 13.7 \
+	--axisMax 13.7 \
+	--pMin 1 \
+	--pMax 1E8 \
+	-o dat \
+	-o eps \
+	-o gif \
+	-o root \
+ ../ssr01.m.root

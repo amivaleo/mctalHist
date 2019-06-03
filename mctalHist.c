@@ -165,9 +165,6 @@ int main (int argc, char** argv) {
 		
 		h->SetTitle(tTitle.c_str());
 		
-		tmp = fileName + ".dat";
-		if (file) std::rename(".output.dat", tmp.c_str());
-		
 		// set a constant multiplicative factor
 		if (zMul != 1) {
 			std::cout << yellow << "WARNING :: the z axis is multiplied by the constant factor " << zMul << reset << std::endl;
@@ -188,35 +185,45 @@ int main (int argc, char** argv) {
 		// write the output file if requested // this must be ameliorated
 		if (file) {
 			fileOutput << "# " << tTitle.c_str() << std::endl;
-			fileOutput << "# abiscissae axis: " << tab << xAxis << std::endl;
-			if (xMin != xMax) fileOutput << "#  - from " << xMin << " to " << xMax << std::endl;
-			if (xMul != 1) fileOutput << "#" << tab << "multiplied by" << xMul << std::endl;
-			fileOutput << "# ordinates axis: " << tab << yAxis << std::endl;
-			if (yMin != yMax) fileOutput << "#  - from " << yMin << " to " << yMax << std::endl;
-			if (yMul != 1) fileOutput << "#" << tab << "multiplied by" << yMul << std::endl;
-			fileOutput << "# perpendicular axis: " << tab << zAxis << std::endl;
-			if (zMin != zMax) fileOutput << "#  - from " << zMin << " to " << zMax << std::endl;
-			if (zMul != 1) fileOutput << "#" << tab << "multiplied by" << zMul << std::endl;
-			if (pMin != pMax) fileOutput << "# palette range - from " << pMin << " to " << pMax << std::endl;
+			
+			fileOutput << "# abiscissae axis: " << tab << xAxis;
+			if (xMin != xMax) fileOutput << tab <<  "[" << xMin << ", " << xMax << "]";
+			if (xMul != 1) fileOutput << tab << "multiplied by " << xMul;
+			fileOutput << std::endl;
+			
+			fileOutput << "# ordinates axis: " << tab << yAxis;
+			if (yMin != yMax) fileOutput << tab <<  "[" << yMin << ", " << yMax << "]";
+			if (yMul != 1) fileOutput << tab << "multiplied by " << yMul;
+			fileOutput << std::endl;
+			
+			fileOutput << "# perpendicular axis: " << tab << zAxis;
+			if (zMin != zMax) fileOutput << tab <<  "[" << zMin << ", " << zMax << "]";
+			if (zMul != 1) fileOutput << tab << "multiplied by " << zMul;
+			fileOutput << std::endl;
+			if (pMin != pMax) fileOutput << "# palette range [" << pMin << ", " << pMax << "]" << std::endl;
 		}
-		if (file) fileOutput << "#---" << tab << "Value-------" << tab << "Stat_err----" << std::endl;
-
-		if (pMax == pMin) {
-			pMax = h->GetMaximum();
-			pMin = h->GetMinimum();
-		}
-		Double_t vCut = 1.5;
-		Double_t pCut = (vCut - pMin)/(pMax - pMin);
+		if (file) fileOutput << std::setw(12) << std::setfill('-') << std::left << "#" << tab << std::setw(12) << std::setfill('-') << std::left << "Value" << tab << std::setw(12) << std::setfill('-') << std::left << "AbsErr" << std::endl;
 		
-		const Int_t N = 4;
-		const Int_t NCont = 800;
-		Double_t R[N] = {0.00, 0.00, 0.20, 1.00};
-		Double_t G[N] = {1.00, 0.20, 0.00, 0.00};
-		Double_t B[N] = {0.00, 0.00, 0.00, 0.00};
-		Double_t s[N] = {0.00, pCut, pCut + 0.0001, 1.00};
+//		if (pMax == pMin) {
+//			pMax = h->GetMaximum();
+//			pMin = h->GetMinimum();
+//		}
+//		Double_t vCut = 1.5;
+//		Double_t pCut = (vCut - pMin)/(pMax - pMin);
+//		
+//		std::cout << "asdas " << pCut << std::endl;
+//		
+//		const Int_t N = 4;
+//		const Int_t NCont = 800;
+//		Double_t R[N] = {0.00, 0.00, 0.20, 1.00};
+//		Double_t G[N] = {1.00, 0.20, 0.00, 0.00};
+//		Double_t B[N] = {0.00, 0.00, 0.00, 0.00};
+//		Double_t s[N] = {0.00, pCut, pCut + 0.0001, 1.00};
+//		
+//		TColor::CreateGradientColorTable(N, s, R, G, B, NCont);
+//		gStyle->SetNumberContours(NCont);
 		
-		TColor::CreateGradientColorTable(N, s, R, G, B, NCont);
-		gStyle->SetNumberContours(NCont);
+		
 		
 		h->SetMarkerSize(0.5);
 		gStyle->SetTextSize(0.08);
@@ -311,9 +318,6 @@ int main (int argc, char** argv) {
 		tTitle = tTitle == "" ? s->GetTitle() : tTitle;
 		h->SetTitle(tTitle.c_str());
 		
-		tmp = fileName + ".dat";
-		if (file) std::rename(".output.dat", tmp.c_str());
-		
 		// set a constant multiplicative factor
 		if (xMul != 1) std::cout << yellow << "WARNING :: the x axis is multiplied by the constant factor " << xMul << reset << std::endl;
 		if (yMul == leth) std::cout << yellow << "WARNING :: the y axis is multiplied by the leth constant factor" << reset << std::endl;
@@ -323,7 +327,7 @@ int main (int argc, char** argv) {
 		if (file) fileOutput << "# Title: " << tTitle << std::endl;
 		if (file) fileOutput << "# x axis: " << axes[xAxis] << tab << "Title: " << xTitle << tab << "Range: [" << xMin << ", " << xMax << "] * " << xMul << std::endl;
 		if (file) fileOutput << "# y axis: " << tab << "Title: " << yTitle << tab << "Range: [" << yMin << ", " << yMax << "] * " << yMul << std::endl;
-		if (file) fileOutput << "#xup--------" << tab << "Value-------" << tab << "Stat_err----" << tab << "Rel_err-" << std::endl;
+		if (file) fileOutput << std::setw(12) << std::setfill('-') << std::left << "#xup" << tab << std::setw(12) << std::setfill('-') << std::left << "Value" << tab << std::setw(12) << std::setfill('-') << std::left << "AbsErr" << tab << std::setw(12) << std::setfill('-') << std::left << "RelErr" << std::endl;
 		for (size_t i = 1; i <= h->GetNbinsX(); i++) {
 			h->SetBinError(i, h->GetBinError(i)*yMul);		// mctal2root export abs errors before scaling values by yMul
 			h->SetBinContent(i, h->GetBinContent(i)*yMul);
@@ -343,6 +347,9 @@ int main (int argc, char** argv) {
 		h->Draw("E1 hist");
 		save(c, h);
 	}
+	
+	if (file) std::rename(".output.dat", (fileName + ".dat").c_str());
+	if (file) fileOutput.close();
 	
 	return 0;
 }

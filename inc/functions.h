@@ -171,8 +171,7 @@ void customizeMultiGraph(TMultiGraph * graph) {
 }
 
 void save(TCanvas * c, TObject * obj) {
-	fileOutput.close();
-	if (!file) std::remove(fileName.c_str());
+	if (!file) std::remove(".output.dat");
 	std::string output;
 
 	if (imgFormat.size() > 0) {

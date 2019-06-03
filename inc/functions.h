@@ -64,7 +64,7 @@ void customizeHist(TH1 * hist) {
 	hist->GetZaxis()->SetTitle(zTitle.c_str());
 	hist->SetLineWidth(2);
 	gStyle->SetNumberContours(50);
-	gStyle->SetPalette(kInvertedDarkBodyRadiatior, 0.0, 0.7);
+	gStyle->SetPalette(kInvertedDarkBodyRadiator, 0, 0.7);
 	if (!xLab) {
 		hist->GetXaxis()->SetLabelSize(0);
 		hist->GetXaxis()->SetTitleOffset(0.5);
@@ -83,7 +83,7 @@ void customizeHist(TH1 * hist) {
 	if (dark) hist->GetYaxis()->SetLabelColor(0);
 	if (dark) hist->GetXaxis()->SetTitleColor(0);
 	if (dark) hist->GetYaxis()->SetTitleColor(0);
-	if (dark) gStyle->SetPalette(kDarkBodyRadiator, 0.0, 0.7);
+	if (dark) gStyle->SetPalette(kDarkBodyRadiator, 0, 0.7);
 	return;
 }
 

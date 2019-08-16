@@ -61,8 +61,8 @@ bool tbar(true);	// show toolbar?
 bool file(false);	// write file with hist/graph data?
 bool verb(false);	// verbose?
 bool dark(false);	// dark hist/graph?
-bool tick(true);	// show ticks?
-bool grid(true);	// show grid?
+bool tick(false);	// show ticks?
+bool grid(false);	// show grid?
 bool xLab(true);	// show values on x axis?
 bool yLab(true);	// show values on y axis?
 bool zLab(true);	// show values on z axis?

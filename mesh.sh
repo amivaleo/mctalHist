@@ -1,12 +1,13 @@
 #!/bin/bash
 
-mctal2root ../ssr01.m
+mctal2root mctal
 
 mctalHist \
 	-v \
 	-W 1600 \
 	-H 400 \
 	--fileName meshDose \
+	--error \
 	--tally rmesh61 \
 	--tTitle "Neutron dose rate map" \
 	--xAxis i \
@@ -27,4 +28,4 @@ mctalHist \
 	-o eps \
 	-o gif \
 	-o root \
- ../ssr01.m.root
+ mctal.root

@@ -28,7 +28,7 @@ TCanvas * generateCanvas() {
 	}
 	TCanvas * c = new TCanvas(fileName.c_str(), fileName.c_str(), cWidth, cHeight);
 //                L    R    D    U
-	c->SetMargin(0.1, 0.11, 0.1, 0.1);
+//	c->SetMargin(0.1, 0.1, 0.1, 0.1);
 	if (tbar) c->ToggleEventStatus();
 	if (edit) c->ToggleEditor();
 	if (dark) gStyle->SetTitleTextColor(0);
@@ -59,12 +59,11 @@ void customizeHist(TH1 * hist) {
 	hist->GetYaxis()->SetLabelSize(0.03);
 	hist->GetYaxis()->CenterTitle(true);
 	hist->GetYaxis()->SetTitle(yTitle.c_str());
-	hist->GetYaxis()->SetTitleOffset(0.98);
 	hist->GetZaxis()->SetLabelSize(0.03);
 	hist->GetZaxis()->CenterTitle(true);
 	hist->GetZaxis()->SetTitle(zTitle.c_str());
 	hist->SetLineWidth(2);
-	gStyle->SetNumberContours(800);
+	gStyle->SetNumberContours(100);
 	gStyle->SetPalette(kRainBow, 0, 1.0);
 	if (!xLab) {
 		hist->GetXaxis()->SetLabelSize(0);

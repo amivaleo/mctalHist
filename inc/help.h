@@ -1,7 +1,7 @@
 #ifndef help_h
 #define help_h
 
-const char* const short_opts = "hvbedGgLW:H:F:T:O:q:o:X:Y:Z:B:A:t:Vlc:m:M:p:P:C:";
+const char* const short_opts = "hvbedGgLW:H:F:eT:O:q:o:X:Y:Z:B:A:t:Vlc:m:M:p:P:k:C:";
 const option long_opts[] = {
 	{"help",		no_argument,		nullptr,	'h'},
 
@@ -15,6 +15,7 @@ const option long_opts[] = {
 	{"cHeight",		required_argument,	nullptr,	'H'},
 
 	{"tally",		required_argument,	nullptr,	'F'},
+	{"error",		no_argument,		nullptr,	'e'},
 	{"tTitle",		required_argument,	nullptr,	'T'},
 
 	{"fileName",		required_argument,	nullptr,	'O'},
@@ -37,6 +38,8 @@ const option long_opts[] = {
 	
 	{"pMin",		required_argument,	nullptr,	'p'},
 	{"pMax",		required_argument,	nullptr,	'P'},
+	{"paletteColor",		required_argument,	nullptr,	'k'},
+	
 	
 	{"contour",		required_argument,	nullptr,	'C'},
 
@@ -56,6 +59,7 @@ const std::string optionDescription[] = {
 	"Set canvas height",
 	
 	"Select the tally to plot",
+	"Draw the error map (only for meshes)",
 	"Set the graph title",
 	
 	"Set output files name",
@@ -77,6 +81,7 @@ const std::string optionDescription[] = {
 	
 	"Set coloured palette minimum value",
 	"Set coloured palette maximum value",
+	"Set the palette color style. Default: kRainBow. Possible values: kDeepSea, kGreyScale, kDarkBodyRadiator, kBlueYellow, kRainBow, kInvertedDarkBodyRadiator, kBird, kCubehelix, kGreenRedViolet, kBlueRedYellow, kOcean, kColorPrintableOnGrey, kAlpine, kAquamarine, kArmy, kAtlantic, kAurora, kAvocado, kBeach, kBlackBody, kBlueGreenYellow, kBrownCyan, kCMYK, kCandy, kCherry, kCoffee, kDarkRainBow, kDarkTerrain, kFall, kFruitPunch, kFuchsia, kGreyYellow, kGreenBrownTerrain, kGreenPink, kIsland, kLake, kLightTemperature, kLightTerrain, kMint, kNeon, kPastel, kPearl, kPigeon, kPlum, kRedBlue, kRose, kRust, kSandyTerrain, kSienna, kSolar, kSouthWest, kStarryNight, kSunset, kTemperatureMap, kThermometer, kValentine, kVisibleSpectrum, kWaterMelon, kCool, kCopper, kGistEarth, kViridis, kCividis"
 	
 	"Draw a contour line at given value"
 	};
@@ -139,6 +144,9 @@ std::string ProcessArgs(int argc, char** argv) {
 
 		case 'F':
 			tally = std::string(optarg);
+			break;
+		case 'e':
+			error = 1;
 			break;
 		case 'T':
 			tTitle = std::string(optarg);
@@ -216,6 +224,14 @@ std::string ProcessArgs(int argc, char** argv) {
 			break;
 		case 'P':
 			pMax = std::stod(optarg);
+			break;
+		case 'k':
+			if (getPaletteIndex(std::string(optarg)) != -1)
+				paletteColor = getPaletteIndex(std::string(optarg)) + 51;
+			else {
+				std::cout << yellow << "⚠ :: Invalid palette color entry. Setting kRainBow." << reset << std::endl;
+				paletteColor = 55;
+			}
 			break;
 		
 		case 'C':

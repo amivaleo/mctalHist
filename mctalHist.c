@@ -59,7 +59,7 @@ int main (int argc, char** argv) {
 		} while (!s);
 	} else s = (THnSparseF *)file->Get(tally.c_str());
 	
-	if (s->GetNdimensions() == 11) std::cout << yellow << "WARNING :: the selected tally is a tmesh" << reset << std::endl;
+	if (s->GetNdimensions() == 11) std::cout << yellow << "⚠ :: the selected tally is a tmesh" << reset << std::endl;
 	
 	// print all THnSparse axes if they were not declared in the input bash script
 	if ((xAxis == -1) || (zAxis == -1)) s->Print("all");
@@ -88,7 +88,7 @@ int main (int argc, char** argv) {
 				for (size_t i = 0; i <= s->GetAxis(zAxis)->GetNbins(); i++) std::cout << blue << s->GetAxis(zAxis)->GetBinUpEdge(i) << reset << "  ";
 				std::cout << std::endl;
 				
-				std::cout << yellow << "WARNING :: do not select exact bin edge values. If you want to select bin [1, 2], insert 1.001 and 1.999" << reset << std::endl;
+				std::cout << yellow << "⚠ :: do not select exact bin edge values. If you want to select bin [1, 2], insert 1.001 and 1.999" << reset << std::endl;
 				std::cout << yellow << tab << "You can preferentially select one single value in the bin of interest. If you want to select bin [1, 2], you can insert 1.5 and 1.5" << reset << std::endl;
 				
 				// let the user select to sum all bins content or not
@@ -103,7 +103,7 @@ int main (int argc, char** argv) {
 					zMax = s->GetAxis(zAxis)->GetBinUpEdge(s->GetAxis(zAxis)->FindFixBin(zMax));
 					s->GetAxis(zAxis)->SetRangeUser(zMin, zMax);
 					std::cout << blue << "The selected bin boundaries for the " << axes[zAxis] << " axis are: [" << zMin << "; " << zMax << "]" << reset << std::endl;
-				} else std::cout << yellow << "WARNING :: all bins will be plotted" << reset << std::endl;
+				} else std::cout << yellow << "⚠ :: all bins will be plotted" << reset << std::endl;
 			} else {
 				zMin = s->GetAxis(zAxis)->GetBinLowEdge(s->GetAxis(zAxis)->FindFixBin(zMax));
 				zMax = s->GetAxis(zAxis)->GetBinUpEdge(s->GetAxis(zAxis)->FindFixBin(zMax));
@@ -120,7 +120,7 @@ int main (int argc, char** argv) {
 				std::cin >> tmp;
 				xAxis = getAxisIndex(tmp);
 			} while ((!xAxis) || (!std::cin) || (xAxis > 10));
-			if (verb) std::cout << yellow << "WARNING :: no validation is performed on the inserted values" << reset << std::endl;
+			if (verb) std::cout << yellow << "⚠ :: no validation is performed on the inserted values" << reset << std::endl;
 		}
 		if (yAxis == -1) {
 			do {
@@ -128,20 +128,20 @@ int main (int argc, char** argv) {
 				std::cin >> tmp;
 				yAxis = getAxisIndex(tmp);
 			} while ((!yAxis) || (!std::cin) || (yAxis > 10));
-			if (verb) std::cout << yellow << "WARNING :: no validation is performed on the inserted values" << reset << std::endl;
+			if (verb) std::cout << yellow << "⚠ :: no validation is performed on the inserted values" << reset << std::endl;
 		}
 		
 		if (xLog) {
 			gPad->SetLogx();
-			if (verb) std::cout << yellow << "WARNING :: setting log-scale for x axis" << reset << std::endl;
+			if (verb) std::cout << yellow << "⚠ :: setting log-scale for x axis" << reset << std::endl;
 		}
 		if (yLog) {
 			gPad->SetLogy();
-			if (verb) std::cout << yellow << "WARNING :: setting log-scale for y axis" << reset << std::endl;
+			if (verb) std::cout << yellow << "⚠ :: setting log-scale for y axis" << reset << std::endl;
 		}
 		if (zLog) {
 			gPad->SetLogz();
-			if (verb) std::cout << yellow << "WARNING :: setting log-scale for z axis" << reset << std::endl;
+			if (verb) std::cout << yellow << "⚠ :: setting log-scale for z axis" << reset << std::endl;
 		}
 		
 		if ((xMin == -99999) && (xMax = -99999)) {
@@ -167,7 +167,7 @@ int main (int argc, char** argv) {
 		
 		// set a constant multiplicative factor
 		if (zMul != 1) {
-			std::cout << yellow << "WARNING :: the z axis is multiplied by the constant factor " << zMul << reset << std::endl;
+			std::cout << yellow << "⚠ :: the z axis is multiplied by the constant factor " << zMul << reset << std::endl;
 			h->Scale(zMul);
 		}
 		
@@ -266,7 +266,7 @@ int main (int argc, char** argv) {
 						bin = std::stoi(tmp);
 						fileName += to_string(bin);
 						s->GetAxis(i)->SetRange(bin, bin);
-					} else std::cout << yellow << "WARNING :: all bins will be plotted" << reset << std::endl;
+					} else std::cout << yellow << "⚠ :: all bins will be plotted" << reset << std::endl;
 				
 				} else {
 					fileName += to_string(axesBin[i]);
@@ -281,11 +281,11 @@ int main (int argc, char** argv) {
 		
 		if (xLog) {
 			gPad->SetLogx();
-			if (verb) std::cout << yellow << "WARNING :: setting log-scale for x axis" << reset << std::endl;
+			if (verb) std::cout << yellow << "⚠ :: setting log-scale for x axis" << reset << std::endl;
 		}
 		if (yLog) {
 			gPad->SetLogy();
-			if (verb) std::cout << yellow << "WARNING :: setting log-scale for y axis" << reset << std::endl;
+			if (verb) std::cout << yellow << "⚠ :: setting log-scale for y axis" << reset << std::endl;
 		}
 		
 		// set x and y user ranges
@@ -319,9 +319,9 @@ int main (int argc, char** argv) {
 		h->SetTitle(tTitle.c_str());
 		
 		// set a constant multiplicative factor
-		if (xMul != 1) std::cout << yellow << "WARNING :: the x axis is multiplied by the constant factor " << xMul << reset << std::endl;
-		if (yMul == leth) std::cout << yellow << "WARNING :: the y axis is multiplied by the leth constant factor" << reset << std::endl;
-		else if ((yMul != leth) && (yMul != 1)) std::cout << yellow << "WARNING :: the y axis is multiplied by the constant factor " << yMul << reset << std::endl;
+		if (xMul != 1) std::cout << yellow << "⚠ :: the x axis is multiplied by the constant factor " << xMul << reset << std::endl;
+		if (yMul == leth) std::cout << yellow << "⚠ :: the y axis is multiplied by the leth constant factor" << reset << std::endl;
+		else if ((yMul != leth) && (yMul != 1)) std::cout << yellow << "⚠ :: the y axis is multiplied by the constant factor " << yMul << reset << std::endl;
 		
 		// write the output file if requested
 		if (file) fileOutput << "# Title: " << tTitle << std::endl;

@@ -12,6 +12,12 @@ size_t getAxisIndex(const std::string element) {
 	else return -1;
 }
 
+size_t getPaletteIndex(const std::string element) {
+	auto it = std::find(paletteColorStyle.begin(), paletteColorStyle.end(), element);
+	if (it != paletteColorStyle.end()) return std::distance(paletteColorStyle.begin(), it);
+	else return -1;
+}
+
 template <typename T>
 std::string to_string (const T val) {
 	std::ostringstream out;
@@ -56,15 +62,23 @@ void customizeHist(TH1 * hist) {
 	hist->GetXaxis()->SetLabelSize(0.03);
 	hist->GetXaxis()->CenterTitle(true);
 	hist->GetXaxis()->SetTitle(xTitle.c_str());
+//	hist->GetXaxis()->SetTitleSize(0.01);
+	
 	hist->GetYaxis()->SetLabelSize(0.03);
 	hist->GetYaxis()->CenterTitle(true);
 	hist->GetYaxis()->SetTitle(yTitle.c_str());
+//	hist->GetYaxis()->SetTitleSize(0.1);
+	hist->GetYaxis()->SetTitleOffset(1);
+	
 	hist->GetZaxis()->SetLabelSize(0.03);
 	hist->GetZaxis()->CenterTitle(true);
 	hist->GetZaxis()->SetTitle(zTitle.c_str());
+	hist->GetZaxis()->SetTitleSize(0.07);
+	hist->GetZaxis()->SetLabelSize(0.026);
+	
 	hist->SetLineWidth(2);
 	gStyle->SetNumberContours(100);
-	gStyle->SetPalette(kRainBow, 0, 1.0);
+	gStyle->SetPalette(paletteColor, 0, 1.0);
 	if (!xLab) {
 		hist->GetXaxis()->SetLabelSize(0);
 		hist->GetXaxis()->SetTitleOffset(0.5);
@@ -83,20 +97,6 @@ void customizeHist(TH1 * hist) {
 	if (dark) hist->GetYaxis()->SetLabelColor(0);
 	if (dark) hist->GetXaxis()->SetTitleColor(0);
 	if (dark) hist->GetYaxis()->SetTitleColor(0);
-	if (dark) gStyle->SetPalette(kRainBow, 0, 1.0);
-	return;
-}
-
-void customizePie(TPie * pie) {
-	pie->SetTitle(tTitle.c_str());
-//	graph->GetXaxis()->SetLabelSize(0.03);
-//	graph->GetXaxis()->CenterTitle(true);
-//	graph->GetXaxis()->SetTitle(xTitle.c_str());
-//	graph->GetYaxis()->SetLabelSize(0.03);
-//	graph->GetYaxis()->CenterTitle(true);
-//	graph->GetYaxis()->SetTitle(yTitle.c_str());
-//	graph->SetLineWidth(2);
-//	graph->SetMarkerSize(8);
 	return;
 }
 

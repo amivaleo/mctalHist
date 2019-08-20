@@ -85,6 +85,10 @@ double zMax(-99999);
 
 double pMin(1);
 double pMax(1);
+int paletteColor = 55; //kRainBow
+
+std::vector<std::string> paletteColorStyle = {"kDeepSea", "kGreyScale", "kDarkBodyRadiator", "kBlueYellow", "kRainBow", "kInvertedDarkBodyRadiator", "kBird", "kCubehelix", "kGreenRedViolet", "kBlueRedYellow", "kOcean", "kColorPrintableOnGrey", "kAlpine", "kAquamarine", "kArmy", "kAtlantic", "kAurora", "kAvocado", "kBeach", "kBlackBody", "kBlueGreenYellow", "kBrownCyan", "kCMYK", "kCandy", "kCherry", "kCoffee", "kDarkRainBow", "kDarkTerrain", "kFall", "kFruitPunch", "kFuchsia", "kGreyYellow", "kGreenBrownTerrain", "kGreenPink", "kIsland", "kLake", "kLightTemperature", "kLightTerrain", "kMint", "kNeon", "kPastel", "kPearl", "kPigeon", "kPlum", "kRedBlue", "kRose", "kRust", "kSandyTerrain", "kSienna", "kSolar", "kSouthWest", "kStarryNight", "kSunset", "kTemperatureMap", "kThermometer", "kValentine", "kVisibleSpectrum", "kWaterMelon", "kCool", "kCopper", "kGistEarth", "kViridis", "kCividis"};
+
 
 double xMul(1);
 double yMul(1);

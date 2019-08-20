@@ -1,15 +1,13 @@
 #!/bin/bash
 
-mctal2root mctal
-
 mctalHist \
 	-v \
-	-W 1600 \
-	-H 400 \
+	-W 1000 \
+	-H 300 \
 	--fileName meshDose \
-	--error \
-	--tally rmesh61 \
+	--tally rmesh11 \
 	--tTitle "Neutron dose rate map" \
+	--contour 1.5 \
 	--xAxis i \
 	--yAxis j \
 	--zAxis k \
@@ -22,10 +20,8 @@ mctalHist \
 	--axisLog \
 	--axisMin 13.7 \
 	--axisMax 13.7 \
-	--pMin 1 \
-	--pMax 1E8 \
-	-o dat \
-	-o eps \
-	-o gif \
-	-o root \
+	--pMin 1E-3 \
+	--pMax 1E+7 \
+	--paletteColor "kRainBow" \
+	-o pdf \
  mctal.root

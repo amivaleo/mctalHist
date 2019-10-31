@@ -33,14 +33,17 @@ TCanvas * generateCanvas() {
 		cHeight = img->GetHeight();
 	}
 	TCanvas * c = new TCanvas(fileName.c_str(), fileName.c_str(), cWidth, cHeight);
+	c->SetWindowSize(cWidth + (cWidth - c->GetWw()), cHeight + (cHeight - c->GetWh()));
 //                L    R    D    U
 //	c->SetMargin(0.1, 0.1, 0.1, 0.1);
+	c->SetMargin(0.1, 0.1, 0.1, 0.1);
 	if (tbar) c->ToggleEventStatus();
 	if (edit) c->ToggleEditor();
 	if (dark) gStyle->SetTitleTextColor(0);
 	if (dark) c->SetFillColor(1);
 	if (grid) c->SetGrid();
 	if (tick) gPad->SetTicks();
+	gStyle->SetOptStat(0);
 	return c;
 }
 
@@ -62,19 +65,18 @@ void customizeHist(TH1 * hist) {
 	hist->GetXaxis()->SetLabelSize(0.03);
 	hist->GetXaxis()->CenterTitle(true);
 	hist->GetXaxis()->SetTitle(xTitle.c_str());
-//	hist->GetXaxis()->SetTitleSize(0.01);
+	hist->GetXaxis()->SetTitleSize(0.03);
 	
 	hist->GetYaxis()->SetLabelSize(0.03);
 	hist->GetYaxis()->CenterTitle(true);
 	hist->GetYaxis()->SetTitle(yTitle.c_str());
-//	hist->GetYaxis()->SetTitleSize(0.1);
-	hist->GetYaxis()->SetTitleOffset(1);
+	hist->GetYaxis()->SetTitleSize(0.03);
+	hist->GetYaxis()->SetTitleOffset(1.0);
 	
-	hist->GetZaxis()->SetLabelSize(0.03);
+	hist->GetZaxis()->SetLabelSize(0.024);
 	hist->GetZaxis()->CenterTitle(true);
 	hist->GetZaxis()->SetTitle(zTitle.c_str());
-	hist->GetZaxis()->SetTitleSize(0.07);
-	hist->GetZaxis()->SetLabelSize(0.026);
+	hist->GetZaxis()->SetTitleSize(0.03);
 	
 	hist->SetLineWidth(2);
 	gStyle->SetNumberContours(100);
@@ -124,13 +126,13 @@ void customizeGraph(TGraphErrors * graph) {
 
 void customizeGraph2D(TGraph2D * graph) {
 	graph->SetTitle(tTitle.c_str());
-	graph->GetXaxis()->SetLabelSize(0.03);
+	graph->GetXaxis()->SetLabelSize(0.05);
 	graph->GetXaxis()->CenterTitle(true);
 	graph->GetXaxis()->SetTitle(xTitle.c_str());
-	graph->GetYaxis()->SetLabelSize(0.03);
+	graph->GetYaxis()->SetLabelSize(0.05);
 	graph->GetYaxis()->CenterTitle(true);
 	graph->GetYaxis()->SetTitle(yTitle.c_str());
-	graph->GetZaxis()->SetLabelSize(0.03);
+	graph->GetZaxis()->SetLabelSize(0.05);
 	graph->GetZaxis()->CenterTitle(true);
 	graph->GetZaxis()->SetTitle(zTitle.c_str());
 	graph->SetLineWidth(3);
@@ -153,10 +155,10 @@ void customizeGraph2D(TGraph2D * graph) {
 
 void customizeMultiGraph(TMultiGraph * graph) {
 	graph->SetTitle(tTitle.c_str());
-	graph->GetXaxis()->SetLabelSize(0.03);
+	graph->GetXaxis()->SetLabelSize(0.04);
 	graph->GetXaxis()->CenterTitle(true);
 	graph->GetXaxis()->SetTitle(xTitle.c_str());
-	graph->GetYaxis()->SetLabelSize(0.03);
+	graph->GetYaxis()->SetLabelSize(0.04);
 	graph->GetYaxis()->CenterTitle(true);
 	graph->GetYaxis()->SetTitle(yTitle.c_str());
 	if (!xLab) graph->GetXaxis()->SetLabelSize(0);
@@ -171,23 +173,29 @@ void customizeMultiGraph(TMultiGraph * graph) {
 }
 
 void save(TCanvas * c, TObject * obj) {
-	if (!file) std::remove(".output.dat");
 	std::string output;
-
+	
+	if (file) {
+		std::rename(".output.dat", (fileName + ".dat").c_str());
+		fileOutput.close();
+	} else if (!file) {
+		std::remove(".output.dat");
+	}
+	
 	if (imgFormat.size() > 0) {
 		for (size_t i = 0; i < imgFormat.size(); ++i) {
 			output = fileName + "." + imgFormat[i];
 			if (imgFormat[i] == "root")
 				obj->SaveAs(output.c_str());
 			else 
-				c->Print(output.c_str());
+				c->SaveAs(output.c_str());
 		}
 	} else {
 		output = fileName + ".gif";
-		c->Print(output.c_str());
+		c->SaveAs(output.c_str());
 		c->Close();
 	}
-		
+	return;
 }
 
 #endif

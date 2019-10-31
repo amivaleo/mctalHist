@@ -3,15 +3,15 @@
 
 const std::string tab("\t");
 
-const std::string blue("\033[1;34m");	// info
-const std::string green("\033[1;32m");	// request
-const std::string pink("\033[1;35m");	// test
-const std::string red("\033[1;31m");	// errors
-const std::string yellow("\033[1;33m");	// warnings
+const std::string blue = "\033[1;34m🛈 ";	// info
+const std::string green = "\033[1;32m☛ ";	// request
+const std::string pink = "\033[1;35m⚙ ";	// test
+const std::string red = "\033[1;31m✖ ";	// errors
+const std::string yellow= "\033[1;33m⚠ ";	// warnings
 
 const std::string reset("\033[0m\e[0m");
 
-const double leth = 10/TMath::Log(10);	// mcnp2lethargy conversion factor
+//const double leth = 10/TMath::Log(10);	// mcnp2lethargy conversion factor
 
 const size_t color[] = {
 	kRed - 3,

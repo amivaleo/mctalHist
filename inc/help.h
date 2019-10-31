@@ -1,33 +1,26 @@
 #ifndef help_h
 #define help_h
 
-const char* const short_opts = "hvbedGgLW:H:F:eT:O:q:o:X:Y:Z:B:A:t:Vlc:m:M:p:P:k:C:";
+const char* const short_opts = "hvbedGgW:H:F:eT:O:q:o:X:Y:Z:B:A:t:Vlc:m:M:p:P:k:C:";
 const option long_opts[] = {
 	{"help",		no_argument,		nullptr,	'h'},
-
+	{"verb",		no_argument,		nullptr,	'v'},
 	{"tbar",		no_argument,		nullptr,	'b'},
 	{"dark",		no_argument,		nullptr,	'd'},
 	{"tick",		no_argument,		nullptr,	'G'},
 	{"grid",		no_argument,		nullptr,	'g'},
-	{"leth",		no_argument,		nullptr,	'L'},
-
 	{"cWidth",		required_argument,	nullptr,	'W'},
 	{"cHeight",		required_argument,	nullptr,	'H'},
-
 	{"tally",		required_argument,	nullptr,	'F'},
 	{"error",		no_argument,		nullptr,	'e'},
 	{"tTitle",		required_argument,	nullptr,	'T'},
-
 	{"fileName",		required_argument,	nullptr,	'O'},
 	{"imgName",		required_argument,	nullptr,	'q'},
 	{"imgFormat",		required_argument,	nullptr,	'o'},
-	
 	{"xAxis",		required_argument,	nullptr,	'X'},
 	{"yAxis",		required_argument,	nullptr,	'Y'},
 	{"zAxis",		required_argument,	nullptr,	'Z'},
-
 	{"axisBin",		required_argument,	nullptr,	'B'},
-	
 	{"whichAxis",		required_argument,	nullptr,	'A'},
 	{"axisTitle",		required_argument,	nullptr,	't'},
 	{"axisValues",		no_argument,		nullptr,	'V'},
@@ -35,12 +28,9 @@ const option long_opts[] = {
 	{"axisMul",		required_argument,	nullptr,	'c'},
 	{"axisMin",		required_argument,	nullptr,	'm'},
 	{"axisMax",		required_argument,	nullptr,	'M'},
-	
 	{"pMin",		required_argument,	nullptr,	'p'},
 	{"pMax",		required_argument,	nullptr,	'P'},
 	{"paletteColor",		required_argument,	nullptr,	'k'},
-	
-	
 	{"contour",		required_argument,	nullptr,	'C'},
 
 	{nullptr,		no_argument,		nullptr,	0}
@@ -53,7 +43,6 @@ const std::string optionDescription[] = {
 	"Dark variant",
 	"Show ticks",
 	"Show grid",
-	"Multiply the y axis values by a constant factor in order to give results in lethargy units",
 	
 	"Set canvas width",
 	"Set canvas height",
@@ -99,8 +88,8 @@ void PrintHelp() {
 std::string ProcessArgs(int argc, char** argv) {
 
 	if (argc < 2) {
-		std::cout << blue << "Usage: mctalHist [-option VALUE] file.root" << reset << std::endl;
-		std::cout << blue << "The content in square brackets [ ] is optional" << reset << std::endl;
+		std::cout << blue << "Usage: mctalHist [options…] file.root" << reset << std::endl;
+		return "breakmaincode";
 	}
 
 	std::string whichAxis = "";
@@ -116,127 +105,79 @@ std::string ProcessArgs(int argc, char** argv) {
 
 		switch (opt) {
 		
-		case 'h':
-			PrintHelp();
-			break;
-		case 'v':
-			verb = 1;
-			break;
-		case 'd':
-			dark = 1;
-			break;
-		case 'G':
-			tick = 1;
-			break;
-		case 'g':
-			grid = 1;
-			break;
-		case 'L':
-			yMul *= leth;
-			break;
-
-		case 'W':
-			cWidth = std::stoi(optarg);
-			break;
-		case 'H':
-			cHeight = std::stoi(optarg);
-			break;
-
-		case 'F':
-			tally = std::string(optarg);
-			break;
-		case 'e':
-			error = 1;
-			break;
-		case 'T':
-			tTitle = std::string(optarg);
-			break;
-			
-		case 'O':
-			fileName = std::string(optarg);
-			break;
-		case 'q':
-			imgName = std::string(optarg);
-			break;
+		case 'h':	PrintHelp();	break;
+		case 'v':	verb = 1;	break;
+		case 'd':	dark = 1;	break;
+		case 'G':	tick = 1;	break;
+		case 'g':	grid = 1;	break;
+		case 'W':	cWidth = std::stoi(optarg);	break;
+		case 'H':	cHeight = std::stoi(optarg);	break;
+		case 'F':	tally = std::string(optarg);	break;
+		case 'e':	error = 1;	break;
+		case 'T':	tTitle = std::string(optarg);	break;
+		case 'O':	fileName = std::string(optarg);	break;
+		case 'q':	imgName = std::string(optarg);	break;
 		case 'o':
-			if (std::string(optarg) == "dat")
+			if (std::string(optarg) == "dat") {
 				file = 1;
-			else
+			} else {
 				imgFormat.push_back(std::string(optarg));
+			}
 			break;
 		
-		case 'X':
-			xAxis = getAxisIndex(std::string(optarg));
-			break;
-		case 'Y':
-			yAxis = getAxisIndex(std::string(optarg));
-			break;
-		case 'Z':
-			zAxis = getAxisIndex(std::string(optarg));
-			break;
-			
-		case 'B':
-			axesBin[getAxisIndex(whichAxis)] = std::stoi(optarg);
-			break;
-
-		case 'A':
-			whichAxis = std::string(optarg);
-			break;
-			
+		case 'X':	xAxis = getAxisIndex(std::string(optarg));	break;
+		case 'Y':	yAxis = getAxisIndex(std::string(optarg));	break;
+		case 'Z':	zAxis = getAxisIndex(std::string(optarg));	break;
+		case 'B':	axesBin[getAxisIndex(whichAxis)] = std::stoi(optarg);	break;
+		case 'A':	whichAxis = std::string(optarg);	break;
 		case 't':
 			if (whichAxis == "x") xTitle = std::string(optarg);
 			else if (whichAxis == "y") yTitle = std::string(optarg);
 			else if (whichAxis == "z") zTitle = std::string(optarg);
-			break;
+		break;
 
 		case 'V':
 			if (whichAxis == "x") xLab = true;
 			else if (whichAxis == "y") yLab = true;
 			else if (whichAxis == "z") zLab = true;
-			break;
+		break;
 		
 		case 'l':
 			if (whichAxis == "x") xLog = true;
 			else if (whichAxis == "y") yLog = true;
 			else if (whichAxis == "z") zLog = true;
-			break;
+		break;
 		
 		case 'c':
 			if (whichAxis == "x") xMul = std::stod(optarg);
 			else if (whichAxis == "y") yMul = std::stod(optarg);
 			else if (whichAxis == "z") zMul = std::stod(optarg);
-			break;
+		break;
 		
 		case 'm':
 			if (whichAxis == "x") xMin = std::stod(optarg);
 			else if (whichAxis == "y") yMin = std::stod(optarg);
 			else if (whichAxis == "z") zMin = std::stod(optarg);
-			break;
+		break;
 		
 		case 'M':
 			if (whichAxis == "x") xMax = std::stod(optarg);
 			else if (whichAxis == "y") yMax = std::stod(optarg);
 			else if (whichAxis == "z") zMax = std::stod(optarg);
-			break;
+		break;
 		
-		case 'p':
-			pMin = std::stod(optarg);
-			break;
-		case 'P':
-			pMax = std::stod(optarg);
-			break;
+		case 'p':	pMin = std::stod(optarg);	break;
+		case 'P':	pMax = std::stod(optarg);	break;
 		case 'k':
 			if (getPaletteIndex(std::string(optarg)) != -1)
 				paletteColor = getPaletteIndex(std::string(optarg)) + 51;
 			else {
-				std::cout << yellow << "⚠ :: Invalid palette color entry. Setting kRainBow." << reset << std::endl;
+				std::cout << yellow << "Invalid palette color entry. Setting kRainBow." << reset << std::endl;
 				paletteColor = 55;
 			}
-			break;
+		break;
 		
-		case 'C':
-			contour.push_back(std::stod(optarg));
-			break;
+		case 'C':	contour.push_back(std::stod(optarg));	break;
 		}
 		
 		input = std::string(argv[argc - 1]);

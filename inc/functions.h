@@ -34,9 +34,6 @@ TCanvas * generateCanvas() {
 	}
 	TCanvas * c = new TCanvas(fileName.c_str(), fileName.c_str(), cWidth, cHeight);
 	c->SetWindowSize(cWidth + (cWidth - c->GetWw()), cHeight + (cHeight - c->GetWh()));
-//                L    R    D    U
-//	c->SetMargin(0.1, 0.1, 0.1, 0.1);
-	c->SetMargin(0.1, 0.1, 0.1, 0.1);
 	if (tbar) c->ToggleEventStatus();
 	if (edit) c->ToggleEditor();
 	if (dark) gStyle->SetTitleTextColor(0);
@@ -62,21 +59,23 @@ TLegend * generateLegend(unsigned int size = 0) {
 
 void customizeHist(TH1 * hist) {
 	hist->SetTitle(tTitle.c_str());
-	hist->GetXaxis()->SetLabelSize(0.03);
+	hist->GetXaxis()->SetLabelSize(xLabel);
 	hist->GetXaxis()->CenterTitle(true);
 	hist->GetXaxis()->SetTitle(xTitle.c_str());
-	hist->GetXaxis()->SetTitleSize(0.03);
+	hist->GetXaxis()->SetTitleSize(0.04);
 	
-	hist->GetYaxis()->SetLabelSize(0.03);
+	hist->GetYaxis()->SetLabelSize(yLabel);
 	hist->GetYaxis()->CenterTitle(true);
 	hist->GetYaxis()->SetTitle(yTitle.c_str());
-	hist->GetYaxis()->SetTitleSize(0.03);
+	hist->GetYaxis()->SetTitleSize(0.04);
 	hist->GetYaxis()->SetTitleOffset(1.0);
 	
-	hist->GetZaxis()->SetLabelSize(0.024);
+	hist->GetZaxis()->SetLabelSize(zLabel);
 	hist->GetZaxis()->CenterTitle(true);
 	hist->GetZaxis()->SetTitle(zTitle.c_str());
-	hist->GetZaxis()->SetTitleSize(0.03);
+	hist->GetZaxis()->SetTitleSize(0.04);
+	
+	canvasRightMargin = 0.15;
 	
 	hist->SetLineWidth(2);
 	gStyle->SetNumberContours(100);
@@ -92,6 +91,7 @@ void customizeHist(TH1 * hist) {
 	if (!zLab) {
 		hist->GetZaxis()->SetLabelSize(0);
 		hist->GetZaxis()->SetTitleOffset(0.5);
+		canvasRightMargin = 0.1;
 	}
 	if (dark) hist->GetXaxis()->SetAxisColor(0);
 	if (dark) hist->GetYaxis()->SetAxisColor(0);
@@ -155,10 +155,10 @@ void customizeGraph2D(TGraph2D * graph) {
 
 void customizeMultiGraph(TMultiGraph * graph) {
 	graph->SetTitle(tTitle.c_str());
-	graph->GetXaxis()->SetLabelSize(0.04);
+	graph->GetXaxis()->SetLabelSize(0.03);
 	graph->GetXaxis()->CenterTitle(true);
 	graph->GetXaxis()->SetTitle(xTitle.c_str());
-	graph->GetYaxis()->SetLabelSize(0.04);
+	graph->GetYaxis()->SetLabelSize(0.03);
 	graph->GetYaxis()->CenterTitle(true);
 	graph->GetYaxis()->SetTitle(yTitle.c_str());
 	if (!xLab) graph->GetXaxis()->SetLabelSize(0);

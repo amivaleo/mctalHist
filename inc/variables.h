@@ -3,11 +3,11 @@
 
 const std::string tab("\t");
 
-const std::string blue = "\033[1;34m🛈 ";	// info
-const std::string green = "\033[1;32m☛ ";	// request
-const std::string pink = "\033[1;35m⚙ ";	// test
-const std::string red = "\033[1;31m✖ ";	// errors
-const std::string yellow= "\033[1;33m⚠ ";	// warnings
+const std::string blue = "\033[1;34m";	// info
+const std::string green = "\033[1;32m";	// request
+const std::string pink = "\033[1;35m";	// test
+const std::string red = "\033[1;31m";	// errors
+const std::string yellow= "\033[1;33m";	// warnings
 
 const std::string reset("\033[0m\e[0m");
 
@@ -71,6 +71,8 @@ bool yLog(false);	// y axis log-scale?
 bool zLog(false);	// z axis log-scale?
 
 bool error(false);
+bool projection(false);
+double constantX(-99999), constantY(-99999);
 
 int xAxis = -1;
 int yAxis = -1;
@@ -82,6 +84,10 @@ double yMin(-99999);
 double yMax(-99999);
 double zMin(-99999);
 double zMax(-99999);
+
+double xLabel(0.03), yLabel(0.03), zLabel(0.03);
+
+double canvasRightMargin(0.1);
 
 double pMin(1);
 double pMax(1);

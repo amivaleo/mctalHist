@@ -1,21 +1,30 @@
 #!/bin/bash
 
-if [ $# -eq 0 ]; then
-	echo "Usage: ./script.sh mctal.root"
-	exit 1
-fi
+mctalHist \
+	-W 640 -H 480 \
+	--tally rmesh11 \
+	--fileName mctal.root.rmesh11 \
+	--tTitle "Plot Title" \
+	--xAxis i --yAxis j --zAxis k \
+	-A x --projection 15.5 \
+	-A x --axisTitle "x" \
+	-A y --axisTitle "y" \
+	-A z --axisTitle "z" --axisLog --axisMin 15.5 --axisMax 15.5 \
+	--paletteColor "kRainBow" \
+	-o pdf \
+mctal.root
+
 
 mctalHist \
-	--verb \
-	-W 1000 -H 300 \
-	--tally rmesh11 \
-	--fileName $1.rmesh11 \
-	--tTitle "Neutron dose rate map" \
-	--contour 1.5 \
+	-W 640 -H 480 \
+	--tally rmesh11 --error \
+	--fileName mctal.root.rmesh11 \
+	--tTitle "Plot Title" \
 	--xAxis i --yAxis j --zAxis k \
-	-A x --axisTitle "x [cm]" \
-	-A y --axisTitle "y [cm]" \
-	-A z --axisTitle "[#mu SV/h]" --axisLog --axisMin 13.7 --axisMax 13.7 \
-	--pMin 1E-3 --pMax 1E+7 --paletteColor "kRainBow" \
+	-A x --projection 15.5 \
+	-A x --axisTitle "x" \
+	-A y --axisTitle "y" \
+	-A z --axisTitle "z" --axisMin 15.5 --axisMax 15.5 \
+	--paletteColor "kRainBow" --pMin 0 --pMax 1\
 	-o pdf \
-$1
+mctal.root

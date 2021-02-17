@@ -1,7 +1,7 @@
 #ifndef help_h
 #define help_h
 
-const char* const short_opts = "hvbedGgW:H:F:eT:O:q:o:X:Y:Z:B:A:t:Vlc:m:M:p:P:k:C:";
+const char* const short_opts = "hvbedGgW:H:F:eS:T:O:q:o:X:Y:Z:L:B:A:t:Vlc:m:M:p:P:K:C:";
 const option long_opts[] = {
 	{"help",		no_argument,		nullptr,	'h'},
 	{"verb",		no_argument,		nullptr,	'v'},
@@ -13,6 +13,7 @@ const option long_opts[] = {
 	{"cHeight",		required_argument,	nullptr,	'H'},
 	{"tally",		required_argument,	nullptr,	'F'},
 	{"error",		no_argument,		nullptr,	'e'},
+	{"projection",		required_argument,		nullptr,	'S'},
 	{"tTitle",		required_argument,	nullptr,	'T'},
 	{"fileName",		required_argument,	nullptr,	'O'},
 	{"imgName",		required_argument,	nullptr,	'q'},
@@ -20,6 +21,7 @@ const option long_opts[] = {
 	{"xAxis",		required_argument,	nullptr,	'X'},
 	{"yAxis",		required_argument,	nullptr,	'Y'},
 	{"zAxis",		required_argument,	nullptr,	'Z'},
+	{"axisLabelSize",		required_argument,	nullptr,	'L'},
 	{"axisBin",		required_argument,	nullptr,	'B'},
 	{"whichAxis",		required_argument,	nullptr,	'A'},
 	{"axisTitle",		required_argument,	nullptr,	't'},
@@ -30,7 +32,7 @@ const option long_opts[] = {
 	{"axisMax",		required_argument,	nullptr,	'M'},
 	{"pMin",		required_argument,	nullptr,	'p'},
 	{"pMax",		required_argument,	nullptr,	'P'},
-	{"paletteColor",		required_argument,	nullptr,	'k'},
+	{"paletteColor",		required_argument,	nullptr,	'K'},
 	{"contour",		required_argument,	nullptr,	'C'},
 
 	{nullptr,		no_argument,		nullptr,	0}
@@ -48,6 +50,9 @@ const std::string optionDescription[] = {
 	"Set canvas height",
 	
 	"Select the tally to plot",
+	
+	"Draw the profile at a desired position",
+	
 	"Draw the error map (only for meshes)",
 	"Set the graph title",
 	
@@ -59,6 +64,10 @@ const std::string optionDescription[] = {
 	"Set what the x axis will represent",
 	"Set what the y axis will represent",
 	"Set what the z axis will represent",
+	
+	"Set x label font size",
+	"Set y label font size",
+	"Set z label font size",
 	
 	"Select the axis for which you want to set options",
 	"Set axis title",
@@ -114,6 +123,13 @@ std::string ProcessArgs(int argc, char** argv) {
 		case 'H':	cHeight = std::stoi(optarg);	break;
 		case 'F':	tally = std::string(optarg);	break;
 		case 'e':	error = 1;	break;
+		
+		case 'S':
+			projection = 1;
+			if (whichAxis == "x") constantY = std::stod(optarg);
+			else if (whichAxis == "y") constantX = std::stod(optarg);
+		break;
+		
 		case 'T':	tTitle = std::string(optarg);	break;
 		case 'O':	fileName = std::string(optarg);	break;
 		case 'q':	imgName = std::string(optarg);	break;
@@ -126,10 +142,15 @@ std::string ProcessArgs(int argc, char** argv) {
 			break;
 		
 		case 'X':	xAxis = getAxisIndex(std::string(optarg));	break;
+		
 		case 'Y':	yAxis = getAxisIndex(std::string(optarg));	break;
+		
 		case 'Z':	zAxis = getAxisIndex(std::string(optarg));	break;
+		
 		case 'B':	axesBin[getAxisIndex(whichAxis)] = std::stoi(optarg);	break;
+		
 		case 'A':	whichAxis = std::string(optarg);	break;
+		
 		case 't':
 			if (whichAxis == "x") xTitle = std::string(optarg);
 			else if (whichAxis == "y") yTitle = std::string(optarg);
@@ -166,9 +187,15 @@ std::string ProcessArgs(int argc, char** argv) {
 			else if (whichAxis == "z") zMax = std::stod(optarg);
 		break;
 		
+		case 'L':
+			if (whichAxis == "x") xLabel = std::stod(optarg);
+			else if (whichAxis == "y") yLabel = std::stod(optarg);
+			else if (whichAxis == "z") zLabel = std::stod(optarg);
+		break;
+		
 		case 'p':	pMin = std::stod(optarg);	break;
 		case 'P':	pMax = std::stod(optarg);	break;
-		case 'k':
+		case 'K':
 			if (getPaletteIndex(std::string(optarg)) != -1)
 				paletteColor = getPaletteIndex(std::string(optarg)) + 51;
 			else {

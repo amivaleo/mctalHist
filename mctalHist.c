@@ -21,35 +21,31 @@ int main (int argc, char** argv) {
 	std::string tmp;
 	std::string input = ProcessArgs(argc, argv);
 	
-	if (input == "breakmaincode") {
-		return 1;
-	}
-	
 	if (!fileExist(input.c_str())) {
 		std::cerr << red << "Input file doesn't exist!" << reset << std::endl;
 		return 1;
 	}
 	
-	TCanvas * c = generateCanvas();
+	TCanvas *c = generateCanvas();
 	
-	if (img) {
-		if (verb) std::cout << blue << "Picture " << imgName << " found" << reset << std::endl;
-		TPad * background = new TPad("background", "background", 0, 0, 1, 1);
-		background->Draw();
-		background->cd();
-		img->Draw();
-		
-		c->cd();
-		TPad * p2 = new TPad("p2", "p2", 0, 0, 1, 1);
-		p2->SetFillStyle(4000);
-		p2->SetFrameFillColor(0);
-		p2->SetFrameFillStyle(0);
-		p2->Draw();
-		p2->cd();
-	}
+//	if (img) {
+//		if (verb) std::cout << blue << "Picture " << imgName << " found" << reset << std::endl;
+//		TPad * background = new TPad("background", "background", 0, 0, 1, 1);
+//		background->Draw();
+//		background->cd();
+//		img->Draw();
+//		
+//		c->cd();
+//		TPad * p2 = new TPad("p2", "p2", 0, 0, 1, 1);
+//		p2->SetFillStyle(4000);
+//		p2->SetFrameFillColor(0);
+//		p2->SetFrameFillStyle(0);
+//		p2->Draw();
+//		p2->cd();
+//	}
 	
-	TFile * file = new TFile(input.c_str());
-	THnSparseF * s;
+	TFile *file = new TFile(input.c_str());
+	THnSparseF *s;
 	
 	if (tally == "") {
 		file->ls();
@@ -71,12 +67,15 @@ int main (int argc, char** argv) {
 		s->Print("all");
 	}
 	
-	fileName = fileName == "" ? tally : fileName;
+	fileName = fileName == "" ? input.c_str() + tally : fileName;
 	
 	// =========================================================================
 	// MESH --------------------------------------------------------------------
 	// =========================================================================
 	if (s->GetNdimensions() == 11) {
+		
+		//           L    R    D    U
+		c->SetMargin(0.1, 0.1, 0.1, 0.1);
 		
 		// select the axis to plot
 		if ((zAxis < 0) || (zAxis > 10)) {
@@ -199,52 +198,45 @@ int main (int argc, char** argv) {
 		
 		// write the output file if requested // this must be ameliorated
 		if (file) {
-			fileOutput << "# " << tTitle.c_str() << std::endl;
+			fileOutput << "# title: " << tTitle.c_str() << std::endl;
 			
-			fileOutput << "# abiscissae axis: " << tab << xAxis;
+			fileOutput << std::setw(20) << std::setfill(' ') << std::left << "# abiscissae axis: " << tab << xAxis;
 			if (xMin != xMax) fileOutput << tab <<  "[" << xMin << ", " << xMax << "]";
 			if (xMul != 1) fileOutput << tab << "multiplied by " << xMul;
 			fileOutput << std::endl;
 			
-			fileOutput << "# ordinates axis: " << tab << yAxis;
+			fileOutput << std::setw(20) << std::setfill(' ') << "# ordinates axis: " << tab << yAxis;
 			if (yMin != yMax) fileOutput << tab <<  "[" << yMin << ", " << yMax << "]";
 			if (yMul != 1) fileOutput << tab << "multiplied by " << yMul;
 			fileOutput << std::endl;
 			
-			fileOutput << "# perpendicular axis: " << tab << zAxis;
+			fileOutput << std::setw(20) << std::setfill(' ') << "# perpendicular axis: " << tab << zAxis;
 			if (zMin != zMax) fileOutput << tab <<  "[" << zMin << ", " << zMax << "]";
 			if (zMul != 1) fileOutput << tab << "multiplied by " << zMul;
 			fileOutput << std::endl;
 			if (pMin != pMax) fileOutput << "# palette range [" << pMin << ", " << pMax << "]" << std::endl;
 
-			fileOutput << std::setw(12) << std::setfill('-') << std::left << "#" << tab;
-			fileOutput << std::setw(12) << std::setfill('-') << std::left << "Value" << tab;
-			fileOutput << std::setw(12) << std::setfill('-') << std::left << "AbsErr" << std::endl;
+			fileOutput << std::setw(12) << std::setfill('-') << std::left << "# value" << std::endl;
+			for (Int_t j = 1; j <= h->GetNbinsY(); j++)
+				for (Int_t i = 1; i <= h->GetNbinsX(); i++) {
+					fileOutput << std::scientific << std::setw(13) << std::setfill(' ') << std::left << h->GetBinContent(h->GetBin(i, j));
+					if (i == h->GetNbinsX())
+						fileOutput << std::endl;
+				}
+				
+			fileOutput << std::endl;
+			
+			fileOutput << std::setw(12) << std::setfill('-') << std::left << "# absErr" << std::endl;
+			for (Int_t j = 1; j <= h->GetNbinsY(); j++)
+				for (Int_t i = 1; i <= h->GetNbinsX(); i++) {
+					fileOutput << std::fixed << std::setw(13) << std::setfill(' ') << std::left << h->GetBinError(h->GetBin(i, j)) / h->GetBinContent(h->GetBin(i, j));
+					if (i == h->GetNbinsX())
+						fileOutput << std::endl;
+				}
+			
 		}
 		
-//		if (pMax == pMin) {
-//			pMax = h->GetMaximum();
-//			pMin = h->GetMinimum();
-//		}
-//		Double_t vCut = 1.5;
-//		Double_t pCut = (vCut - pMin)/(pMax - pMin);
-//		
-//		std::cout << "asdas " << pCut << std::endl;
-//		
-//		const Int_t N = 4;
-//		const Int_t NCont = 800;
-//		Double_t R[N] = {0.00, 0.00, 0.20, 1.00};
-//		Double_t G[N] = {1.00, 0.20, 0.00, 0.00};
-//		Double_t B[N] = {0.00, 0.00, 0.00, 0.00};
-//		Double_t s[N] = {0.00, pCut, pCut + 0.0001, 1.00};
-//		
-//		TColor::CreateGradientColorTable(N, s, R, G, B, NCont);
-//		gStyle->SetNumberContours(NCont);
-		
-		h->SetMarkerSize(0.5);
-		gStyle->SetTextSize(0.08);
-		h->DrawCopy("colz");
-		
+		h->DrawCopy("COLZ");
 		if (contour.size() > 0) {
 			h->SetContour(contour.size(), &contour[0]);
 			h->SetLineWidth(1);
@@ -252,6 +244,26 @@ int main (int argc, char** argv) {
 			h->Draw("cont3 same");
 		}
 		save(c, h);
+
+		if (projection && constantY != -99999) {
+			TH1D *hP = h->ProjectionX("hP", h->GetXaxis()->FindFixBin(constantY), h->GetXaxis()->FindFixBin(constantY));
+			
+			for (Int_t i = 1; i <= hP->GetNbinsX(); i++)
+				std::cout << hP->GetBinContent(i) << tab;
+				
+			hP->SetLineWidth(1);
+//			hP->SetLineColor(dark);
+			hP->Draw("HIST E0");
+			fileName += "_Xprojection";
+			save(c, hP);
+		} else if (projection && constantX != -99999) {
+			TH1D *hP = h->ProjectionY("hP", h->GetYaxis()->FindFixBin(constantX), h->GetYaxis()->FindFixBin(constantX));
+			hP->SetLineWidth(1);
+//			hP->SetLineColor(dark);
+			hP->Draw("HIST E0");
+			fileName += "_Yprojection";
+			save(c, hP);
+		}
 		
 	// =========================================================================
 	} else {	// TALLY -------------------------------------------------------
@@ -330,13 +342,13 @@ int main (int argc, char** argv) {
 		
 		// write the output file if requested
 		if (file) {
-			fileOutput << "# Title: " << tTitle << std::endl;
-			fileOutput << "# x axis: " << axes[xAxis] << tab << "Title: " << xTitle << tab << "Range: [" << xMin << ", " << xMax << "] * " << xMul << std::endl;
-			fileOutput << "# y axis: " << tab << "Title: " << yTitle << tab << "Range: [" << yMin << ", " << yMax << "] * " << yMul << std::endl;
+			fileOutput << "# title: " << tTitle << std::endl;
+			fileOutput << std::setw(20) << std::setfill(' ') << "# x axis: " << axes[xAxis] << tab << "Title: " << xTitle << tab << "Range: [" << xMin << ", " << xMax << "] * " << xMul << std::endl;
+			fileOutput << std::setw(20) << std::setfill(' ') << "# y axis: " << "Title: " << yTitle << tab << "Range: [" << yMin << ", " << yMax << "] * " << yMul << std::endl;
 			fileOutput << std::setw(12) << std::setfill('-') << std::left << "#xup" << tab;
-			fileOutput << std::setw(12) << std::setfill('-') << std::left << "Value" << tab;
-			fileOutput << std::setw(12) << std::setfill('-') << std::left << "AbsErr" << tab;
-			fileOutput << std::setw(12) << std::setfill('-') << std::left << "RelErr" << std::endl;
+			fileOutput << std::setw(12) << std::setfill('-') << std::left << "value" << tab;
+			fileOutput << std::setw(12) << std::setfill('-') << std::left << "absErr" << tab;
+			fileOutput << std::setw(12) << std::setfill('-') << std::left << "relErr" << std::endl;
 		}
 		
 		for (size_t i = 1; i <= h->GetNbinsX(); i++) {

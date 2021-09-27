@@ -190,10 +190,6 @@ void save(TCanvas * c, TObject * obj) {
 			else 
 				c->SaveAs(output.c_str());
 		}
-	} else {
-		output = fileName + ".gif";
-		c->SaveAs(output.c_str());
-		c->Close();
 	}
 	return;
 }

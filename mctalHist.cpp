@@ -1,5 +1,5 @@
 /*
-g++ mctalHist.c `root-config --cflags --ldflags --libs` -o mctalHist && mv mctalHist ~/.local/bin
+g++ mctalHist.c `root-config --cflags --ldflags --libs` -o mctalHist
 */
 
 #include <math.h>

@@ -1,5 +1,5 @@
 /*
-g++ mctalHist.c `root-config --cflags --ldflags --libs` -o mctalHist
+ g++ mctalHist.cpp `root-config --cflags --ldflags --libs` -o mctalHist ; ln -sf /home/jimmy/Documenti/Repo/mctalHist/mctalHist ~/.local/bin/mctalHist
 */
 
 #include <math.h>
@@ -17,7 +17,7 @@ g++ mctalHist.c `root-config --cflags --ldflags --libs` -o mctalHist
 #include "inc/functions.h"
 #include "inc/help.h"
 
-int main (int argc, char** argv) {
+int main(int argc, char** argv) {
 	std::string tmp;
 	std::string input = ProcessArgs(argc, argv);
 	
@@ -28,21 +28,21 @@ int main (int argc, char** argv) {
 	
 	TCanvas *c = generateCanvas();
 	
-//	if (img) {
-//		if (verb) std::cout << blue << "Picture " << imgName << " found" << reset << std::endl;
-//		TPad * background = new TPad("background", "background", 0, 0, 1, 1);
-//		background->Draw();
-//		background->cd();
-//		img->Draw();
-//		
-//		c->cd();
-//		TPad * p2 = new TPad("p2", "p2", 0, 0, 1, 1);
-//		p2->SetFillStyle(4000);
-//		p2->SetFrameFillColor(0);
-//		p2->SetFrameFillStyle(0);
-//		p2->Draw();
-//		p2->cd();
-//	}
+	if (img) {
+		if (verb) std::cout << blue << "Picture " << imgName << " found" << reset << std::endl;
+		TPad * background = new TPad("background", "background", 0, 0, 1, 1);
+		background->Draw();
+		background->cd();
+		img->Draw();
+		
+		c->cd();
+		TPad * p2 = new TPad("p2", "p2", 0, 0, 1, 1);
+		p2->SetFillStyle(4000);
+		p2->SetFrameFillColor(0);
+		p2->SetFrameFillStyle(0);
+		p2->Draw();
+		p2->cd();
+	}
 	
 	TFile *file = new TFile(input.c_str());
 	THnSparseF *s;
@@ -162,7 +162,7 @@ int main (int argc, char** argv) {
 			xMin = s->GetAxis(xAxis)->GetBinLowEdge(s->GetAxis(xAxis)->GetFirst());
 			xMax = s->GetAxis(xAxis)->GetBinUpEdge(s->GetAxis(yAxis)->GetLast());
 		} else {
-			std::cout << blue << "User defined range for the x axis: [" << xMin << "; " << xMax << "]" << reset << std::endl;
+			if (verb) std::cout << blue << "User defined range for the x axis: [" << xMin << "; " << xMax << "]" << reset << std::endl;
 			s->GetAxis(xAxis)->SetRangeUser(xMin, xMax);
 		}
 		
@@ -170,7 +170,7 @@ int main (int argc, char** argv) {
 			yMin = s->GetAxis(yAxis)->GetBinLowEdge(s->GetAxis(yAxis)->GetFirst());
 			yMax = s->GetAxis(yAxis)->GetBinUpEdge(s->GetAxis(yAxis)->GetLast());
 		} else {
-			std::cout << blue << "User defined range for the y axis: [" << yMin << "; " << yMax << "]" << reset << std::endl;
+			if (verb) std::cout << blue << "User defined range for the y axis: [" << yMin << "; " << yMax << "]" << reset << std::endl;
 			s->GetAxis(yAxis)->SetRangeUser(yMin, yMax);
 		}
 		
@@ -283,7 +283,7 @@ int main (int argc, char** argv) {
 		for (size_t i = 0; i < s->GetNdimensions(); i++) {
 			if ((i != xAxis) && (s->GetAxis(i)->GetNbins() > 1)) {
 				fileName += "-" + axes[i];
-				std::cout << blue << "Axis " << axes[i] << " has " << s->GetAxis(i)->GetNbins() << " bins" << reset;
+				if (verb) std::cout << blue << "Axis " << axes[i] << " has " << s->GetAxis(i)->GetNbins() << " bins" << reset;
 				
 				if (axesBin[i] == 0) {
 					std::cout << std::endl;
@@ -299,7 +299,7 @@ int main (int argc, char** argv) {
 				} else {
 					fileName += to_string(axesBin[i]);
 					s->GetAxis(i)->SetRange(axesBin[i], axesBin[i]);
-					std::cout << blue << ". Selected bin " << axesBin[i] << reset << std::endl;
+					if (verb) std::cout << blue << ". Selected bin " << axesBin[i] << reset << std::endl;
 				}
 			}
 		}
@@ -321,7 +321,7 @@ int main (int argc, char** argv) {
 			xMin = h->GetXaxis()->GetBinUpEdge(h->GetXaxis()->GetFirst());
 			xMax = h->GetXaxis()->GetBinUpEdge(h->GetXaxis()->GetLast());
 		} else {
-			std::cout << blue << "User defined range for the x axis: [" << xMin << "; " << xMax << "]" << reset << std::endl;
+			if (verb) std::cout << blue << "User defined range for the x axis: [" << xMin << "; " << xMax << "]" << reset << std::endl;
 			h->GetXaxis()->SetRangeUser(xMin, xMax);
 		}
 		
@@ -329,7 +329,7 @@ int main (int argc, char** argv) {
 			yMin = h->GetYaxis()->GetBinLowEdge(h->GetYaxis()->GetFirst());
 			yMax = h->GetYaxis()->GetBinUpEdge(h->GetYaxis()->GetLast());
 		} else {
-			std::cout << blue << "User defined range for the y axis: [" << yMin << "; " << yMax << "]" << reset << std::endl;
+			if (verb) std::cout << blue << "User defined range for the y axis: [" << yMin << "; " << yMax << "]" << reset << std::endl;
 			h->GetYaxis()->SetRangeUser(yMin, yMax);
 		}
 		
@@ -343,12 +343,31 @@ int main (int argc, char** argv) {
 		// write the output file if requested
 		if (file) {
 			fileOutput << "# title: " << tTitle << std::endl;
-			fileOutput << std::setw(20) << std::setfill(' ') << "# x axis: " << axes[xAxis] << tab << "Title: " << xTitle << tab << "Range: [" << xMin << ", " << xMax << "] * " << xMul << std::endl;
-			fileOutput << std::setw(20) << std::setfill(' ') << "# y axis: " << "Title: " << yTitle << tab << "Range: [" << yMin << ", " << yMax << "] * " << yMul << std::endl;
+			fileOutput << "# -- x axis:" << std::endl;
+			fileOutput << std::setw(10) << std::left << std::setfill(' ') << "# type:" << axes[xAxis] << std::endl;
+			fileOutput << std::setw(10) << std::left << std::setfill(' ') << "# title:" << xTitle << std::endl;
+			fileOutput << std::setw(10) << std::left << std::setfill(' ') << "# range:" << "[" << xMin << ", " << xMax << "] * " << xMul << std::endl;
+			
+			fileOutput << "# -- y axis:" << std::endl;
+			fileOutput << std::setw(10) << std::left << std::setfill(' ') << "# title:" << yTitle << std::endl;
+			fileOutput << std::setw(10) << std::left << std::setfill(' ') << "# range:" << "[" << yMin << ", " << yMax << "] * " << yMul << std::endl;
+		}
+		
+		if ((integralMin != -99999) && (integralMax != -99999)) {
+			int integralBinMin = h->GetXaxis()->FindBin(integralMin);
+			int integralBinMax = h->GetXaxis()->FindBin(integralMax) - 1;
+			if (verb) std::cout << blue << "integralBinMin: " << integralBinMin << " [" << h->GetXaxis()->GetBinLowEdge(integralBinMin) << "; " << h->GetXaxis()->GetBinUpEdge(integralBinMin) << "]" << tab 
+				    << "integralBinMax: " << integralBinMax << " [" << h->GetXaxis()->GetBinLowEdge(integralBinMax) << "; " << h->GetXaxis()->GetBinUpEdge(integralBinMax) << "]" << reset << std::endl;
+			double integral = h->Integral(integralBinMin, integralBinMax);
+			integral *= yMul;
+			if (file) fileOutput << "# integral [" << std::fixed << h->GetXaxis()->GetBinLowEdge(integralBinMin) << "; " << h->GetXaxis()->GetBinUpEdge(integralBinMax) << "] : " << tab << std::scientific <<  std::setprecision(8) << integral << std::endl << std::setprecision(6);
+		}
+		
+		if (file) {
 			fileOutput << std::setw(12) << std::setfill('-') << std::left << "#xup" << tab;
 			fileOutput << std::setw(12) << std::setfill('-') << std::left << "value" << tab;
 			fileOutput << std::setw(12) << std::setfill('-') << std::left << "absErr" << tab;
-			fileOutput << std::setw(12) << std::setfill('-') << std::left << "relErr" << std::endl;
+			fileOutput << std::setw(8) << std::setfill('-') << std::left << "relErr" << std::endl;
 		}
 		
 		for (size_t i = 1; i <= h->GetNbinsX(); i++) {

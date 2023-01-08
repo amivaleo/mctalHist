@@ -85,6 +85,9 @@ double yMax(-99999);
 double zMin(-99999);
 double zMax(-99999);
 
+double integralMin(-99999);
+double integralMax(-99999);
+
 double xLabel(0.03), yLabel(0.03), zLabel(0.03);
 
 double canvasRightMargin(0.1);
@@ -111,8 +114,8 @@ std::string xTitle = "x";
 std::string yTitle = "y";
 std::string zTitle = "z";
 
-Int_t cWidth = 698;
-Int_t cHeight = 476;
+Int_t cWidth = 1600;
+Int_t cHeight = 1000;
 
 std::string tally = "";
 

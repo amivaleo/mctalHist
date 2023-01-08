@@ -18,8 +18,7 @@ size_t getPaletteIndex(const std::string element) {
 	else return -1;
 }
 
-template <typename T>
-std::string to_string (const T val) {
+template <typename T> std::string to_string (const T val) {
 	std::ostringstream out;
 	out.precision(0);
 	out << std::fixed << val;
@@ -29,8 +28,8 @@ std::string to_string (const T val) {
 TCanvas * generateCanvas() {
 	if (fileExist(imgName.c_str())) {
 		img = TImage::Open(imgName.c_str());
-		cWidth = img->GetWidth();
-		cHeight = img->GetHeight();
+		cWidth = 1.25*img->GetWidth();
+		cHeight = 1.25*img->GetHeight();
 	}
 	TCanvas * c = new TCanvas(fileName.c_str(), fileName.c_str(), cWidth, cHeight);
 	c->SetWindowSize(cWidth + (cWidth - c->GetWw()), cHeight + (cHeight - c->GetWh()));
@@ -59,21 +58,17 @@ TLegend * generateLegend(unsigned int size = 0) {
 
 void customizeHist(TH1 * hist) {
 	hist->SetTitle(tTitle.c_str());
-	hist->GetXaxis()->SetLabelSize(xLabel);
-	hist->GetXaxis()->CenterTitle(true);
+//	hist->GetXaxis()->SetLabelSize(xLabel);
 	hist->GetXaxis()->SetTitle(xTitle.c_str());
-	hist->GetXaxis()->SetTitleSize(0.04);
+//	hist->GetXaxis()->SetTitleSize(0.04);
 	
-	hist->GetYaxis()->SetLabelSize(yLabel);
-	hist->GetYaxis()->CenterTitle(true);
+//	hist->GetYaxis()->SetLabelSize(yLabel);
 	hist->GetYaxis()->SetTitle(yTitle.c_str());
-	hist->GetYaxis()->SetTitleSize(0.04);
-	hist->GetYaxis()->SetTitleOffset(1.0);
+//	hist->GetYaxis()->SetTitleSize(0.04);
 	
-	hist->GetZaxis()->SetLabelSize(zLabel);
-	hist->GetZaxis()->CenterTitle(true);
+//	hist->GetZaxis()->SetLabelSize(zLabel);
 	hist->GetZaxis()->SetTitle(zTitle.c_str());
-	hist->GetZaxis()->SetTitleSize(0.04);
+//	hist->GetZaxis()->SetTitleSize(0.04);
 	
 	canvasRightMargin = 0.15;
 	
@@ -182,7 +177,10 @@ void save(TCanvas * c, TObject * obj) {
 		std::remove(".output.dat");
 	}
 	
-	if (imgFormat.size() > 0) {
+	if (imgFormat.size() == 0) {
+		output = fileName + ".png";
+		c->SaveAs(output.c_str());	
+	} else if (imgFormat.size() > 0) {
 		for (size_t i = 0; i < imgFormat.size(); ++i) {
 			output = fileName + "." + imgFormat[i];
 			if (imgFormat[i] == "root")

@@ -1,7 +1,7 @@
 #ifndef help_h
 #define help_h
 
-const char* const short_opts = "hvbedGgW:H:F:eS:T:O:q:o:X:Y:Z:L:B:A:t:Vlc:m:M:p:P:K:C:";
+const char* const short_opts = "hvbedGgW:H:F:eS:T:O:q:o:X:Y:Z:L:B:A:t:Vlc:m:M:p:P:i:I:K:C:";
 const option long_opts[] = {
 	{"help",		no_argument,		nullptr,	'h'},
 	{"verb",		no_argument,		nullptr,	'v'},
@@ -13,26 +13,28 @@ const option long_opts[] = {
 	{"cHeight",		required_argument,	nullptr,	'H'},
 	{"tally",		required_argument,	nullptr,	'F'},
 	{"error",		no_argument,		nullptr,	'e'},
-	{"projection",		required_argument,		nullptr,	'S'},
+	{"projection",  	required_argument,	nullptr,	'S'},
 	{"tTitle",		required_argument,	nullptr,	'T'},
-	{"fileName",		required_argument,	nullptr,	'O'},
+	{"fileName",	required_argument,	nullptr,	'O'},
 	{"imgName",		required_argument,	nullptr,	'q'},
-	{"imgFormat",		required_argument,	nullptr,	'o'},
+	{"imgFormat",   	required_argument,	nullptr,	'o'},
 	{"xAxis",		required_argument,	nullptr,	'X'},
 	{"yAxis",		required_argument,	nullptr,	'Y'},
 	{"zAxis",		required_argument,	nullptr,	'Z'},
-	{"axisLabelSize",		required_argument,	nullptr,	'L'},
+	{"axisLabelSize",	required_argument,	nullptr,	'L'},
 	{"axisBin",		required_argument,	nullptr,	'B'},
-	{"whichAxis",		required_argument,	nullptr,	'A'},
-	{"axisTitle",		required_argument,	nullptr,	't'},
-	{"axisValues",		no_argument,		nullptr,	'V'},
+	{"whichAxis",	required_argument,	nullptr,	'A'},
+	{"axisTitle",	required_argument,	nullptr,	't'},
+	{"axisValues",	no_argument,		nullptr,	'V'},
 	{"axisLog",		no_argument,		nullptr,	'l'},
 	{"axisMul",		required_argument,	nullptr,	'c'},
 	{"axisMin",		required_argument,	nullptr,	'm'},
 	{"axisMax",		required_argument,	nullptr,	'M'},
 	{"pMin",		required_argument,	nullptr,	'p'},
 	{"pMax",		required_argument,	nullptr,	'P'},
-	{"paletteColor",		required_argument,	nullptr,	'K'},
+	{"integralMin",	required_argument,	nullptr,	'i'},
+	{"integralMax",	required_argument,	nullptr,	'I'},
+	{"paletteColor",	required_argument,	nullptr,	'K'},
 	{"contour",		required_argument,	nullptr,	'C'},
 
 	{nullptr,		no_argument,		nullptr,	0}
@@ -195,6 +197,10 @@ std::string ProcessArgs(int argc, char** argv) {
 		
 		case 'p':	pMin = std::stod(optarg);	break;
 		case 'P':	pMax = std::stod(optarg);	break;
+
+		case 'i':	integralMin = std::stod(optarg);	break;
+		case 'I':	integralMax = std::stod(optarg);	break;
+
 		case 'K':
 			if (getPaletteIndex(std::string(optarg)) != -1)
 				paletteColor = getPaletteIndex(std::string(optarg)) + 51;
